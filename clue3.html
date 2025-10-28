@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clue 3 — Whispering Walls</title>
+  <style>
+    body{background:#04040a;color:#fff;font-family:system-ui;padding:22px}
+    .card{max-width:720px;margin:18px auto;padding:20px;border-radius:12px;background:#0b0b0f}
+    h1{margin:0;color:#9be7ff}
+    p{color:#cccccc}
+    audio{width:100%;margin-top:12px}
+    .btn{padding:10px 12px;background:#9be7ff;color:#021;border-radius:8px;text-decoration:none;font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Clue 3 — Whispering Walls</h1>
+    <p>📚 Pages flip. Secrets hum through the walls. Maybe the answer isn't in a book, but in something that reflects.</p>
+
+    <!-- Optional audio clue (you speaking) -->
+    <!-- Example: <audio controls src="YOUR_AUDIO_URL"></audio> -->
+
+    <p><strong>Clue #3:</strong> Look for your reflection where everyone passes by, but no one stays for long.</p>
+
+    <div style="margin-top:12px">
+      <a class="btn" href="clue4.html">Next Clue ➜</a>
+    </div>
+  </div>
+
+<script>
+/* CONFIG — replace with your form info */
+const FORM_URL = "https://docs.google.com/forms/d/e/FORM_ID/formResponse";
+const ENTRY_PAGE = "entry.1234567890";
+const ENTRY_TIMESTAMP = "entry.0987654321";
+/* ============================== */
+
+const PAGE_INDEX = 3;
+const PAGE_NAME = "Clue 3 — Whispering Walls";
+
+function nowISO(){ return new Date().toISOString(); }
+function getProg(){return parseInt(localStorage.getItem('hunt_progress')||'0',10);}
+function allowed(){ return getProg() >= PAGE_INDEX-1; }
+function logVisit(){
+  if(localStorage.getItem('logged_'+PAGE_INDEX)) return;
+  localStorage.setItem('logged_'+PAGE_INDEX, nowISO());
+  const timestamp = new Date().toLocaleString();
+  fetch(FORM_URL + "?" + ENTRY_PAGE + "=" + encodeURIComponent(PAGE_NAME) + "&" + ENTRY_TIMESTAMP + "=" + encodeURIComponent(timestamp), { mode:'no-cors' });
+}
+(function init(){
+  if(!allowed()){
+    document.body.innerHTML = `<div style="padding:28px;color:#ffd2a6">
+      <h2 style="color:#ff9a66">Not yet — follow the order</h2>
+      <p>Please start at Gates Hall and scan in order. Find the first QR and begin the hunt.</p>
+      <a href="index.html" style="padding:10px 12px;background:#9be7ff;color:#021;border-radius:8px;text-decoration:none;font-weight:700">Start at Gates Hall</a>
+    </div>`;
+    return;
+  }
+  // record progress & log
+  const prog = getProg();
+  if(PAGE_INDEX > prog) localStorage.setItem('hunt_progress', PAGE_INDEX.toString());
+  logVisit();
+
+  // show timer small header
+  const head = document.createElement('div');
+  head.style.display='flex';head.style.justifyContent='space-between';head.style.alignItems='center';head.style.margin='0 0 12px 0';
+  head.innerHTML = `<div style="font-weight:700">Mystery of Livingston</div><div id="globalTimer" style="font-weight:700">24:00:00</div>`;
+  document.body.insertBefore(head, document.body.firstChild);
+  function updateTimer(){
+    const start = parseInt(localStorage.getItem('hunt_start')||'0',10);
+    const el = document.getElementById('globalTimer');
+    if(!start) { el.textContent = "24:00:00"; return; }
+    const end = start + 24*3600*1000;
+    const rem = Math.max(0, end - Date.now());
+    const hh = Math.floor(rem/3600000).toString().padStart(2,'0');
+    const mm = Math.floor((rem%3600000)/60000).toString().padStart(2,'0');
+    const ss = Math.floor((rem%60000)/1000).toString().padStart(2,'0');
+    el.textContent = `${hh}:${mm}:${ss}`;
+  }
+  updateTimer(); setInterval(updateTimer,1000);
+})();
+</script>
+</body>
+</html>
