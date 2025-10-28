@@ -1,50 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR Hunt - Clue 1</title>
-<style>
-  body { font-family: Arial, sans-serif; text-align: center; padding: 2em; background: #f4f4f4; }
-  #timer { font-size: 2em; margin: 1em 0; }
-  button { padding: 0.5em 1em; font-size: 1em; margin: 0.5em; cursor: pointer; }
-  video { max-width: 100%; margin: 1em 0; }
-</style>
-</head>
-<body>
-
-<h1>Clue 1</h1>
-<p>Here’s your first clue! Solve it and submit when ready.</p>
-
-<!-- Timer display -->
-<div id="timer">Loading...</div>
-<button onclick="resetTimer()">Reset Timer</button>
-
-<!-- Video/audio placeholder -->
-<video id="clueVideo" controls>
-  <source src="video1.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
-<!-- Submit button -->
-<button id="submitBtn">Submit Clue</button>
-
-<script>
-// ----------- Google Form Config -----------
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
-const ENTRY_PAGE = "entry.1204348624";      // Page Visited
-const ENTRY_TIMESTAMP = "entry.2081435125"; // Timestamp
-const pageName = "Clue 1"; // Change this for each page
-// -----------------------------------------
-
-// ----------- Countdown Timer -----------
-let timerDuration = 300; // seconds (5 minutes)
+let timerDuration = 86400; // 24 hours in seconds
 let timer;
 
 function formatTime(seconds) {
-    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    return `${hours}h ${minutes}m ${secs}s`;
 }
 
 function startTimer(duration) {
@@ -55,7 +16,7 @@ function startTimer(duration) {
     timer = setInterval(() => {
         remaining--;
         document.getElementById("timer").textContent = formatTime(remaining);
-        if (remaining < 0) {
+        if (remaining <= 0) {
             clearInterval(timer);
             alert("Time's up!");
         }
@@ -66,31 +27,8 @@ function resetTimer() {
     startTimer(timerDuration);
 }
 
-// Start timer on page load
-window.addEventListener("load", () => startTimer(timerDuration));
-// -----------------------------------------
-
-// ----------- Form Submission -----------
-document.getElementById("submitBtn").addEventListener("click", () => {
-    const data = new URLSearchParams();
-    data.append(ENTRY_PAGE, pageName);
-    data.append(ENTRY_TIMESTAMP, new Date().toISOString());
-
-    fetch(FORM_URL, {
-        method: "POST",
-        body: data
-    })
-    .then(() => {
-        alert("Clue submitted!");
-        // Optionally reset timer after submission
-        // resetTimer();
-        // Optionally redirect to next page:
-        // window.location.href = "clue2.html";
-    })
-    .catch(err => console.error("Submission failed", err));
-});
-// -----------------------------------------
-</script>
-
-</body>
-</html>
+// --------- Trigger timer via QR code ---------
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get("start") === "true") {
+    startTimer(timerDuration);
+}
