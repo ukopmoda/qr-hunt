@@ -1,130 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR Hunt - Clue 1</title>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background: #fef6e4;
-    text-align: center;
-    padding: 2em;
-    color: #333;
-  }
-  h1 {
-    font-size: 2.5em;
-    margin-bottom: 0.2em;
-  }
-  #clueText {
-    font-size: 1.2em;
-    margin-bottom: 1em;
-  }
-  #timer {
-    font-size: 2em;
-    margin: 1em 0;
-    color: #d9534f;
-  }
-  button {
-    padding: 0.5em 1em;
-    font-size: 1em;
-    margin: 0.5em;
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    background-color: #0275d8;
-    color: white;
-  }
-  video {
-    max-width: 100%;
-    margin: 1em 0;
-    border: 2px solid #333;
-    border-radius: 8px;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Clue 1 — Gates Hall</title>
+  <style>
+    :root { --bg:#07060a; --accent:#ff6b6b; --muted:#bdbdbd; }
+    body{background:var(--bg);color:#fff;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      margin:0;padding:24px;display:flex;flex-direction:column;min-height:100vh;gap:18px}
+    header{display:flex;justify-content:space-between;align-items:center}
+    h1{color:var(--accent);margin:0;font-size:1.6rem}
+    p{margin:0;color:var(--muted)}
+    main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+    .card{background:#0d0c10;padding:18px;border-radius:12px;max-width:680px;width:100%;box-shadow:0 6px 30px rgba(0,0,0,.6)}
+    .timer{font-size:1.25rem;color:#ffd27a}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:#111;text-decoration:none;font-weight:600;cursor:pointer;border:none}
+    iframe.video{width:100%;height:220px;border-radius:8px;border:0}
+    small.muted{color: #9a9a9a}
+  </style>
 </head>
 <body>
+  <header>
+    <h1>The Mystery of Livingston</h1>
+    <div class="timer" id="global-timer">24:00:00</div>
+  </header>
 
-<h1>Clue 1</h1>
-<p id="clueText">We met at Orientation at Gates Hall. Look around carefully for your next hint!</p>
+  <main>
+    <div class="card">
+      <h2>Start — Gates Hall</h2>
+      <p>🕒 The clock is ticking — 24 hours to uncover the truth.<br>
+      We met here, at Gates Hall. You once told me about a place called <em>Livingston</em>. Is it real?</p>
 
-<div id="timer">Timer inactive</div>
-<button onclick="resetTimer()">Reset Timer</button>
+      <!-- Optional: embed a short video of you here (use YouTube embed link) -->
+      <!-- <iframe class="video" src="https://www.youtube.com/embed/YOUR_VIDEO_ID?rel=0&autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
 
-<!-- Video/audio placeholder -->
-<video id="clueVideo" controls>
-  <source src="video1.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+      <p><strong>Clue #1:</strong> Start where the smell of caffeine lingers and ideas never sleep.</p>
 
-<!-- Submit button -->
-<button id="submitBtn">Submit Clue</button>
+      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+        <a class="btn" id="next-btn" href="clue2.html?start=true">I'm ready — Find clue #2</a>
+        <button class="btn" id="reset-btn">Reset Timer</button>
+        <button class="btn" id="submit-btn">Log Clue Manually</button>
+        <small class="muted">Timer starts when page is opened via QR code.</small>
+      </div>
+    </div>
+
+    <p style="font-size:.9rem;color:#9a9a9a;max-width:680px;">
+      (This page logs each visit automatically to my private sheet.)
+    </p>
+  </main>
 
 <script>
-// ----------- Google Form Config -----------
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
-const ENTRY_PAGE = "entry.1204348624";      // Page Visited
-const ENTRY_TIMESTAMP = "entry.2081435125"; // Timestamp
-const pageName = "Clue 1"; // Change for each page
-// -----------------------------------------
+/* ===== CONFIG ===== */
+const FORM_URL = "https://docs.google.com/forms/d/e/FORM_ID/formResponse"; // replace with your form
+const ENTRY_PAGE = "entry.1234567890";       // replace with your form entry
+const ENTRY_TIMESTAMP = "entry.0987654321";  // replace with your form entry
+const PAGE_INDEX = 1;
+const PAGE_NAME = "Clue 1 — Gates Hall";
+const TOTAL_HOURS = 24;
 
-// ----------- Countdown Timer -----------
-let timerDuration = 86400; // 24 hours
+/* ===== HELPERS ===== */
+function nowISO(){ return new Date().toISOString(); }
+function saveStartIfNeeded(){
+  if(!localStorage.getItem('hunt_start')) localStorage.setItem('hunt_start', Date.now().toString());
+}
+function updateProgress(){
+  let progress = parseInt(localStorage.getItem('hunt_progress')||'0',10);
+  if(PAGE_INDEX > progress) localStorage.setItem('hunt_progress', PAGE_INDEX.toString());
+}
+function logVisit(){
+  if(localStorage.getItem('logged_'+PAGE_INDEX)) return;
+  localStorage.setItem('logged_'+PAGE_INDEX, nowISO());
+  const timestamp = new Date().toLocaleString();
+  const url = FORM_URL + "?" + ENTRY_PAGE + "=" + encodeURIComponent(PAGE_NAME) + "&" + ENTRY_TIMESTAMP + "=" + encodeURIComponent(timestamp);
+  fetch(url, {mode:'no-cors'}).catch(()=>{});
+}
+
+/* ===== TIMER ===== */
 let timer;
-
-function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hours}h ${minutes}m ${secs}s`;
+function updateTimerUI(){
+  const start = parseInt(localStorage.getItem('hunt_start')||'0',10);
+  const el = document.getElementById('global-timer');
+  if(!start){ el.textContent = "24:00:00"; return; }
+  const end = start + TOTAL_HOURS*3600*1000;
+  const rem = Math.max(0, end - Date.now());
+  const hh = Math.floor(rem/3600000).toString().padStart(2,'0');
+  const mm = Math.floor((rem%3600000)/60000).toString().padStart(2,'0');
+  const ss = Math.floor((rem%60000)/1000).toString().padStart(2,'0');
+  el.textContent = `${hh}:${mm}:${ss}`;
 }
-
-function startTimer(duration) {
-    clearInterval(timer);
-    let remaining = duration;
-    document.getElementById("timer").textContent = formatTime(remaining);
-
-    timer = setInterval(() => {
-        remaining--;
-        document.getElementById("timer").textContent = formatTime(remaining);
-        if (remaining <= 0) {
-            clearInterval(timer);
-            alert("Time's up!");
-        }
-    }, 1000);
+function resetTimer(){
+  localStorage.setItem('hunt_start', Date.now().toString());
+  updateTimerUI();
 }
+document.getElementById('reset-btn').addEventListener('click', resetTimer);
 
-function resetTimer() {
-    startTimer(timerDuration);
-}
-
-// Trigger timer only if page opened with ?start=true
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("start") === "true") {
-    startTimer(timerDuration);
-}
-// -----------------------------------------
-
-// ----------- Form Submission -----------
-document.getElementById("submitBtn").addEventListener("click", () => {
-    const data = new URLSearchParams();
-    data.append(ENTRY_PAGE, pageName);
-    data.append(ENTRY_TIMESTAMP, new Date().toISOString());
-
-    fetch(FORM_URL, {
-        method: "POST",
-        body: data
-    })
-    .then(() => {
-        alert("Clue submitted!");
-        // Redirect to next clue
-        window.location.href = "clue2.html?start=true";
-    })
-    .catch(err => console.error("Submission failed", err));
+/* ===== MANUAL SUBMIT ===== */
+document.getElementById('submit-btn').addEventListener('click', ()=>{
+  const timestamp = new Date().toLocaleString();
+  const url = FORM_URL + "?" + ENTRY_PAGE + "=" + encodeURIComponent(PAGE_NAME) + "&" + ENTRY_TIMESTAMP + "=" + encodeURIComponent(timestamp);
+  fetch(url,{mode:'no-cors'}).then(()=>alert('Clue logged!')).catch(()=>alert('Logging failed.'));
 });
-// -----------------------------------------
+
+/* ===== INIT ===== */
+(function init(){
+  const urlParams = new URLSearchParams(window.location.search);
+  if(urlParams.get("start")==="true") saveStartIfNeeded();
+  updateProgress();
+  logVisit();
+  updateTimerUI();
+  setInterval(updateTimerUI, 1000);
+})();
 </script>
 
 </body>
 </html>
-
