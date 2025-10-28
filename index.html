@@ -3,25 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Clue 1 — Gates Hall</title>
+  <title>Hey Berkington</title>
   <style>
     :root { --bg:#07060a; --accent:#ff6b6b; --muted:#bdbdbd; }
     body{background:var(--bg);color:#fff;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       margin:0;padding:24px;display:flex;flex-direction:column;min-height:100vh;gap:18px}
-    header{display:flex;justify-content:space-between;align-items:center}
-    h1{color:var(--accent);margin:0;font-size:1.6rem}
-    p{margin:0;color:var(--muted)}
+    header{text-align:center; animation:fadeIn 2s;}
+    h1{color:var(--accent);margin:0;font-size:2rem;}
+    p.subtext{color:var(--muted);max-width:600px;margin:0 auto;font-size:.95rem;line-height:1.4;}
     main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
     .card{background:#0d0c10;padding:18px;border-radius:12px;max-width:680px;width:100%;box-shadow:0 6px 30px rgba(0,0,0,.6)}
-    .timer{font-size:1.25rem;color:#ffd27a}
+    .timer{font-size:1.25rem;color:#ffd27a;margin-top:12px;}
     .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:#111;text-decoration:none;font-weight:600;cursor:pointer;border:none}
     iframe.video{width:100%;height:220px;border-radius:8px;border:0}
     small.muted{color: #9a9a9a}
+    @keyframes fadeIn { 0% {opacity:0; transform:translateY(-20px);} 100% {opacity:1; transform:translateY(0);} }
   </style>
 </head>
 <body>
   <header>
-    <h1>The Mystery of Livingston</h1>
+    <h1>Hey Berkington</h1>
+    <p class="subtext">
+      So it's Halloween, yay! I wanted to do a little saw/prop hunt type thing or something. 
+      You can ask your friends for help cuz it's lowkey kinda hard, oh and I won't give you any hints haha. 
+      Goodluck Berkshire, you have 24 hours!
+    </p>
     <div class="timer" id="global-timer">24:00:00</div>
   </header>
 
@@ -31,7 +37,7 @@
       <p>🕒 The clock is ticking — 24 hours to uncover the truth.<br>
       We met here, at Gates Hall. You once told me about a place called <em>Livingston</em>. Is it real?</p>
 
-      <!-- Optional: embed a short video of you here (use YouTube embed link) -->
+      <!-- Optional: embed a short video of you here -->
       <!-- <iframe class="video" src="https://www.youtube.com/embed/YOUR_VIDEO_ID?rel=0&autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
 
       <p><strong>Clue #1:</strong> Start where the smell of caffeine lingers and ideas never sleep.</p>
@@ -39,7 +45,6 @@
       <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
         <a class="btn" id="next-btn" href="clue2.html?start=true">I'm ready — Find clue #2</a>
         <button class="btn" id="reset-btn">Reset Timer</button>
-        <button class="btn" id="submit-btn">Log Clue Manually</button>
         <small class="muted">Timer starts when page is opened via QR code.</small>
       </div>
     </div>
@@ -60,13 +65,16 @@ const TOTAL_HOURS = 24;
 
 /* ===== HELPERS ===== */
 function nowISO(){ return new Date().toISOString(); }
+
 function saveStartIfNeeded(){
   if(!localStorage.getItem('hunt_start')) localStorage.setItem('hunt_start', Date.now().toString());
 }
+
 function updateProgress(){
   let progress = parseInt(localStorage.getItem('hunt_progress')||'0',10);
   if(PAGE_INDEX > progress) localStorage.setItem('hunt_progress', PAGE_INDEX.toString());
 }
+
 function logVisit(){
   if(localStorage.getItem('logged_'+PAGE_INDEX)) return;
   localStorage.setItem('logged_'+PAGE_INDEX, nowISO());
@@ -76,7 +84,6 @@ function logVisit(){
 }
 
 /* ===== TIMER ===== */
-let timer;
 function updateTimerUI(){
   const start = parseInt(localStorage.getItem('hunt_start')||'0',10);
   const el = document.getElementById('global-timer');
@@ -88,18 +95,19 @@ function updateTimerUI(){
   const ss = Math.floor((rem%60000)/1000).toString().padStart(2,'0');
   el.textContent = `${hh}:${mm}:${ss}`;
 }
-function resetTimer(){
-  localStorage.setItem('hunt_start', Date.now().toString());
-  updateTimerUI();
-}
-document.getElementById('reset-btn').addEventListener('click', resetTimer);
 
-/* ===== MANUAL SUBMIT ===== */
-document.getElementById('submit-btn').addEventListener('click', ()=>{
-  const timestamp = new Date().toLocaleString();
-  const url = FORM_URL + "?" + ENTRY_PAGE + "=" + encodeURIComponent(PAGE_NAME) + "&" + ENTRY_TIMESTAMP + "=" + encodeURIComponent(timestamp);
-  fetch(url,{mode:'no-cors'}).then(()=>alert('Clue logged!')).catch(()=>alert('Logging failed.'));
-});
+function resetTimer(){
+  const password = prompt("Enter password to reset the timer:");
+  if(password === "YOURSECRET"){ // <-- replace with your secret
+    localStorage.setItem('hunt_start', Date.now().toString());
+    updateTimerUI();
+    alert("Timer reset!");
+  } else {
+    alert("Wrong password!");
+  }
+}
+
+document.getElementById('reset-btn').addEventListener('click', resetTimer);
 
 /* ===== INIT ===== */
 (function init(){
