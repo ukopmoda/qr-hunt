@@ -112,11 +112,17 @@ document.getElementById('reset-btn').addEventListener('click', resetTimer);
 /* ===== INIT ===== */
 (function init(){
   const urlParams = new URLSearchParams(window.location.search);
-  if(urlParams.get("start")==="true") saveStartIfNeeded();
-  updateProgress();
-  logVisit();
-  updateTimerUI();
-  setInterval(updateTimerUI, 1000);
+  if(urlParams.get("start") === "true"){
+    // Only start timer and log visit if QR code triggered
+    saveStartIfNeeded();
+    updateProgress();
+    logVisit();
+    updateTimerUI();
+    setInterval(updateTimerUI, 1000);
+  } else {
+    // If not started via QR, show static timer
+    document.getElementById('global-timer').textContent = "24:00:00";
+  }
 })();
 </script>
 
