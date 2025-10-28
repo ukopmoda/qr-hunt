@@ -41,14 +41,20 @@ const pageName = "Clue 1"; // Change this for each page
 let timerDuration = 300; // seconds (5 minutes)
 let timer;
 
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
 function startTimer(duration) {
-    let remaining = duration;
     clearInterval(timer);
+    let remaining = duration;
+    document.getElementById("timer").textContent = formatTime(remaining);
+
     timer = setInterval(() => {
-        const minutes = Math.floor(remaining / 60);
-        const seconds = remaining % 60;
-        document.getElementById("timer").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         remaining--;
+        document.getElementById("timer").textContent = formatTime(remaining);
         if (remaining < 0) {
             clearInterval(timer);
             alert("Time's up!");
@@ -61,7 +67,7 @@ function resetTimer() {
 }
 
 // Start timer on page load
-startTimer(timerDuration);
+window.addEventListener("load", () => startTimer(timerDuration));
 // -----------------------------------------
 
 // ----------- Form Submission -----------
@@ -76,7 +82,9 @@ document.getElementById("submitBtn").addEventListener("click", () => {
     })
     .then(() => {
         alert("Clue submitted!");
-        // Optionally redirect to next clue:
+        // Optionally reset timer after submission
+        // resetTimer();
+        // Optionally redirect to next page:
         // window.location.href = "clue2.html";
     })
     .catch(err => console.error("Submission failed", err));
