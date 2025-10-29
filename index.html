@@ -41,8 +41,7 @@
   To find the next clue you'll need some gall — your treasure awaits atop the wall!
 </p>
 
-      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
-        <a class="btn" id="next-btn" href="clue2.html?start=true">I'm ready — Find clue #2</a>
+      <!-- QR code triggers next clue, button removed -->
         <button class="btn" id="reset-btn">Reset Timer</button>
         <small class="muted">Timer starts only when page is opened via QR code.</small>
       </div>
@@ -83,28 +82,57 @@ function logVisit(){
 }
 
 /* ===== TIMER ===== */
-function updateTimerUI(){
-  const start = parseInt(localStorage.getItem('hunt_start')||'0',10);
+let timerInterval; // global variable for the interval
+
+function updateTimerUI() {
+  const start = parseInt(localStorage.getItem('hunt_start') || '0', 10);
   const el = document.getElementById('global-timer');
-  if(!start){ el.textContent = "24:00:00"; return; }
-  const end = start + TOTAL_HOURS*3600*1000;
+  if (!start) {
+    el.textContent = "24:00:00";
+    return;
+  }
+  const end = start + TOTAL_HOURS * 3600 * 1000;
   const rem = Math.max(0, end - Date.now());
-  const hh = Math.floor(rem/3600000).toString().padStart(2,'0');
-  const mm = Math.floor((rem%3600000)/60000).toString().padStart(2,'0');
-  const ss = Math.floor((rem%60000)/1000).toString().padStart(2,'0');
+  const hh = Math.floor(rem / 3600000).toString().padStart(2, '0');
+  const mm = Math.floor((rem % 3600000) / 60000).toString().padStart(2, '0');
+  const ss = Math.floor((rem % 60000) / 1000).toString().padStart(2, '0');
   el.textContent = `${hh}:${mm}:${ss}`;
 }
 
-function resetTimer(){
-  const password = prompt("Enter password to reset the timer:");
-  if(password === "YOURSECRET"){ // <-- replace with your secret
+function startTimer() {
+  // clear any previous timer interval
+  if (timerInterval) clearInterval(timerInterval);
+
+  // save start time if not already set
+  if (!localStorage.getItem('hunt_start')) {
     localStorage.setItem('hunt_start', Date.now().toString());
-    updateTimerUI();
+  }
+
+  // update immediately
+  updateTimerUI();
+
+  // start interval
+  timerInterval = setInterval(updateTimerUI, 1000);
+}
+
+function resetTimer() {
+  const password = prompt("Enter password to reset the timer:");
+  if (password === "YOURSECRET") {
+    // reset the start time
+    localStorage.setItem('hunt_start', Date.now().toString());
+
+    // stop previous interval
+    if (timerInterval) clearInterval(timerInterval);
+
+    // restart timer
+    startTimer();
+
     alert("Timer reset!");
   } else {
     alert("Wrong password!");
   }
 }
+
 
 document.getElementById('reset-btn').addEventListener('click', resetTimer);
 
