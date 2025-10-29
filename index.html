@@ -1,156 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Hey Berkington</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Good luck you got this!</title>
   <style>
-    :root { --bg:#07060a; --accent:#ff6b6b; --muted:#bdbdbd; }
-    body{background:var(--bg);color:#fff;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      margin:0;padding:24px;display:flex;flex-direction:column;min-height:100vh;gap:18px}
-    header{text-align:center; animation:fadeIn 2s;}
-    h1{color:var(--accent);margin:0;font-size:2rem;}
-    p.subtext{color:var(--muted);max-width:600px;margin:0 auto;font-size:.95rem;line-height:1.4;}
-    main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-    .card{background:#0d0c10;padding:18px;border-radius:12px;max-width:680px;width:100%;box-shadow:0 6px 30px rgba(0,0,0,.6)}
-    .timer{font-size:1.25rem;color:#ffd27a;margin-top:12px;}
-    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:#111;text-decoration:none;font-weight:600;cursor:pointer;border:none}
-    iframe.video{width:100%;height:220px;border-radius:8px;border:0}
-    small.muted{color: #9a9a9a}
-    @keyframes fadeIn { 0% {opacity:0; transform:translateY(-20px);} 100% {opacity:1; transform:translateY(0);} }
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@300;600&display=swap');
+
+    body {
+      background-color: #0e0e0e;
+      color: #f8f8f8;
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
+      padding: 60px 20px;
+      background: radial-gradient(circle at top, #1a1a1a 0%, #000 100%);
+    }
+
+    h1 {
+      font-family: 'Creepster', cursive;
+      color: #ff471a;
+      font-size: 3rem;
+      animation: flicker 2s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 0 0 4px #ff471a, 0 0 11px #ff471a, 0 0 19px #ff471a;
+      }
+      20%, 24%, 55% {
+        text-shadow: none;
+      }
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #e0e0e0;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .timer {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-top: 30px;
+      color: #ff471a;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #ff471a;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #e63e14;
+      transform: scale(1.05);
+    }
+
+    .clue {
+      margin-top: 40px;
+      font-style: italic;
+      color: #f3f3f3;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Hey Berkington</h1>
-    <p class="subtext">
-      So it's Halloween, yay! I wanted to do a little saw/prop hunt type thing or something. 
-      You can ask your friends for help cuz it's lowkey kinda hard, oh and I won't give you any hints haha. 
-      Goodluck Berkshire, you have 24 hours!
+  <h1>Hey Berkington</h1>
+  <p>
+    So it’s Halloween, yay! 🎃 I wanted to do a little Saw/Prop Hunt type thing or something.  
+    You can ask your friends for help cuz it’s lowkey kinda hard, oh and I won’t give you any hints haha.  
+    Good luck, Berkshire — you have 24 hours!
+  </p>
+
+  <div class="timer" id="countdown">24:00:00</div>
+
+  <div class="clue">
+    <p>
+      The north wind is always colder than the south... or is it?  
+      <strong>Run</strong>, <strong>Even</strong>, <strong>Crawl</strong>, find yourself above them all.  
+      To find the next clue, you'll need some gall — your treasure awaits atop the wall!
     </p>
-    <div class="timer" id="global-timer">24:00:00</div>
-  </header>
+  </div>
 
-  <main>
-    <div class="card">
-     <h2>Good luck, you got this!</h2>
-      <p>🕒 The clock is ticking — 24 hours to uncover the truth.<br>
-<p><strong>Clue #1:</strong> 
-  The north wind is always colder than the south… or is it? <br>
-  <strong>Run</strong>, <strong>Even</strong>, <strong>Crawl</strong>, find yourself above them all. <br>
-  To find the next clue you'll need some gall — your treasure awaits atop the wall!
-</p>
+  <!-- Reset timer button (for you only) -->
+  <button id="resetButton">Reset Timer</button>
 
-      <!-- QR code triggers next clue, button removed -->
-        <button class="btn" id="reset-btn">Reset Timer</button>
-        <small class="muted">Timer starts only when page is opened via QR code.</small>
-      </div>
-    </div>
+  <script>
+    // ====== TIMER LOGIC ======
+    const countdownEl = document.getElementById("countdown");
+    const resetButton = document.getElementById("resetButton");
 
-    <p style="font-size:.9rem;color:#9a9a9a;max-width:680px;">
-      (This page logs each visit automatically to my private sheet.)
-    </p>
-  </main>
+    const totalSeconds = 24 * 60 * 60; // 24 hours
+    const endTimeKey = "huntEndTime";
+    let countdownInterval;
 
-<script>
-/* ===== CONFIG ===== */
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
-const ENTRY_PAGE = "entry.1204348624";
-const ENTRY_TIMESTAMP = "entry.2081435125";
-const PAGE_INDEX = 1;
-const PAGE_NAME = "Clue 1 — Gates Hall";
-const TOTAL_HOURS = 24;
-/* ===== HELPERS ===== */
-function nowISO(){ return new Date().toISOString(); }
+    function startCountdown() {
+      const endTime = localStorage.getItem(endTimeKey);
+      if (!endTime) return;
 
-function saveStartIfNeeded(){
-  if(!localStorage.getItem('hunt_start')) localStorage.setItem('hunt_start', Date.now().toString());
-}
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        const remaining = Math.floor((endTime - Date.now()) / 1000);
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+          countdownEl.textContent = "00:00:00";
+        } else {
+          const h = String(Math.floor(remaining / 3600)).padStart(2, "0");
+          const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+          const s = String(remaining % 60).padStart(2, "0");
+          countdownEl.textContent = `${h}:${m}:${s}`;
+        }
+      }, 1000);
+    }
 
-function updateProgress(){
-  let progress = parseInt(localStorage.getItem('hunt_progress')||'0',10);
-  if(PAGE_INDEX > progress) localStorage.setItem('hunt_progress', PAGE_INDEX.toString());
-}
+    function resetTimer() {
+      const newEnd = Date.now() + totalSeconds * 1000;
+      localStorage.setItem(endTimeKey, newEnd);
+      startCountdown();
+    }
 
-function logVisit(){
-  if(localStorage.getItem('logged_'+PAGE_INDEX)) return;
-  localStorage.setItem('logged_'+PAGE_INDEX, nowISO());
-  const timestamp = new Date().toLocaleString();
-  const url = FORM_URL + "?" + ENTRY_PAGE + "=" + encodeURIComponent(PAGE_NAME) + "&" + ENTRY_TIMESTAMP + "=" + encodeURIComponent(timestamp);
-  fetch(url, {mode:'no-cors'}).catch(()=>{});
-}
+    resetButton.addEventListener("click", () => {
+      const pass = prompt("Enter reset password:");
+      if (pass === "pumpkinpatch") {
+        resetTimer();
+        alert("Timer reset successfully!");
+      } else {
+        alert("Incorrect password.");
+      }
+    });
 
-/* ===== TIMER ===== */
-let timerInterval; // global variable for the interval
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
+      resetTimer(); // start timer on first scan
+    }
 
-function updateTimerUI() {
-  const start = parseInt(localStorage.getItem('hunt_start') || '0', 10);
-  const el = document.getElementById('global-timer');
-  if (!start) {
-    el.textContent = "24:00:00";
-    return;
-  }
-  const end = start + TOTAL_HOURS * 3600 * 1000;
-  const rem = Math.max(0, end - Date.now());
-  const hh = Math.floor(rem / 3600000).toString().padStart(2, '0');
-  const mm = Math.floor((rem % 3600000) / 60000).toString().padStart(2, '0');
-  const ss = Math.floor((rem % 60000) / 1000).toString().padStart(2, '0');
-  el.textContent = `${hh}:${mm}:${ss}`;
-}
-
-function startTimer() {
-  // clear any previous timer interval
-  if (timerInterval) clearInterval(timerInterval);
-
-  // save start time if not already set
-  if (!localStorage.getItem('hunt_start')) {
-    localStorage.setItem('hunt_start', Date.now().toString());
-  }
-
-  // update immediately
-  updateTimerUI();
-
-  // start interval
-  timerInterval = setInterval(updateTimerUI, 1000);
-}
-
-function resetTimer() {
-  const password = prompt("Enter password to reset the timer:");
-  if (password === "YOURSECRET") {
-    // reset the start time
-    localStorage.setItem('hunt_start', Date.now().toString());
-
-    // stop previous interval
-    if (timerInterval) clearInterval(timerInterval);
-
-    // restart timer
-    startTimer();
-
-    alert("Timer reset!");
-  } else {
-    alert("Wrong password!");
-  }
-}
+    startCountdown();
+    // ====== END TIMER LOGIC ======
 
 
-document.getElementById('reset-btn').addEventListener('click', resetTimer);
+    // ====== GOOGLE FORM LOGGING ======
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
+    const ENTRY_PAGE = "entry.1204348624";
+    const ENTRY_TIMESTAMP = "entry.2081435125";
 
-/* ===== INIT ===== */
-(function init(){
-  const urlParams = new URLSearchParams(window.location.search);
-  if(urlParams.get("start") === "true"){
-    // Only start timer and log visit if QR code triggered
-    saveStartIfNeeded();
-    updateProgress();
-    logVisit();
-    updateTimerUI();
-    setInterval(updateTimerUI, 1000);
-  } else {
-    // If not started via QR, show static timer
-    document.getElementById('global-timer').textContent = "24:00:00";
-  }
-})();
-</script>
+    function logVisit(pageName) {
+      const timestamp = new Date().toLocaleString();
+      const url = `${FORM_URL}?${ENTRY_PAGE}=${encodeURIComponent(pageName)}&${ENTRY_TIMESTAMP}=${encodeURIComponent(timestamp)}`;
+      fetch(url, { mode: "no-cors" })
+        .then(() => console.log("✅ Logged visit to Google Form"))
+        .catch(err => console.error("❌ Logging failed:", err));
+    }
 
+    window.addEventListener("load", () => {
+      logVisit("Clue 1 — Good luck you got this!");
+    });
+    // ====== END FORM LOGGING ======
+  </script>
 </body>
 </html>
+
