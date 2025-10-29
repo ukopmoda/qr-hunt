@@ -53,34 +53,13 @@
   </main>
 
 <script>
-// ====== GOOGLE FORM LOGGING ======
+/* ===== CONFIG ===== */
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
-const ENTRY_PAGE = "entry.1204348624";  // Page Visited
-const ENTRY_TIMESTAMP = "entry.2081435125"; // Timestamp
-
-function logVisit(pageName) {
-  const timestamp = new Date().toLocaleString();
-  const url =
-    FORM_URL +
-    "?" +
-    ENTRY_PAGE +
-    "=" +
-    encodeURIComponent(pageName) +
-    "&" +
-    ENTRY_TIMESTAMP +
-    "=" +
-    encodeURIComponent(timestamp);
-
-  fetch(url, { mode: "no-cors" })
-    .then(() => console.log("Logged visit to Google Form"))
-    .catch((err) => console.error("Logging failed:", err));
-}
-
-// Trigger it once when the page loads
-window.addEventListener("load", () => {
-  logVisit("Clue 1 — Good luck you got this!");
-});
-// =================================
+const ENTRY_PAGE = "entry.1204348624";
+const ENTRY_TIMESTAMP = "entry.2081435125";
+const PAGE_INDEX = 1;
+const PAGE_NAME = "Clue 1 — Gates Hall";
+const TOTAL_HOURS = 24;
 /* ===== HELPERS ===== */
 function nowISO(){ return new Date().toISOString(); }
 
