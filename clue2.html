@@ -84,12 +84,15 @@
 </head>
 <body>
   <h1>Twin!</h1>
+
   <p>
-    Congratulations! You're amazing, I just want you to know that. Honestly I didn't even climb up there myself, so I really commend your determination!
+    Congratulations! You're amazing, I just want you to know that. Honestly I didn’t even climb up there myself, so I really commend your determination!
   </p>
+
   <p>
-    You're onto the next hint! Try looking around where we first met. Oh and don't forget to do those modules, it could put your <b>registration</b> on hold.  
-    Lol I'm really in here like the riddler.
+    You’re onto the next hint! Try looking around where we first met.  
+    Oh and don’t forget to do those modules — it could put your <strong>registration</strong> on hold.  
+    Lol I’m really in here like the riddler.
   </p>
 
   <div class="timer" id="countdown">24:00:00</div>
@@ -140,8 +143,31 @@
       }
     });
 
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
+      resetTimer(); // start timer on first scan
+    }
+
     startCountdown();
+    // ====== END TIMER LOGIC ======
+
+    // ====== GOOGLE FORM LOGGING ======
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
+    const ENTRY_PAGE = "entry.1204348624";
+    const ENTRY_TIMESTAMP = "entry.2081435125";
+
+    function logVisit(pageName) {
+      const timestamp = new Date().toLocaleString();
+      const url = `${FORM_URL}?${ENTRY_PAGE}=${encodeURIComponent(pageName)}&${ENTRY_TIMESTAMP}=${encodeURIComponent(timestamp)}`;
+      fetch(url, { mode: "no-cors" })
+        .then(() => console.log("✅ Logged visit to Google Form"))
+        .catch(err => console.error("❌ Logging failed:", err));
+    }
+
+    window.addEventListener("load", () => {
+      logVisit("Clue 2 — Twin!");
+    });
+    // ====== END FORM LOGGING ======
   </script>
 </body>
 </html>
-
