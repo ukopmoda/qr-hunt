@@ -21,19 +21,14 @@
       font-size: 3rem;
       color: #ff471a;
       text-shadow: 0 0 4px #000;
-      animation: flicker 12s infinite;
+      animation: flicker 10s infinite;
     }
 
-    /* Irregular spooky gas-station flicker */
+    /* Irregular spooky gas station flicker */
     @keyframes flicker {
-      0%, 2%, 5%, 15%, 23%, 30%, 35%, 42%, 50%, 60%, 70%, 80%, 90%, 100% {
-        color: #b22a0f;
-        text-shadow: 0 0 2px #000;
-      }
-      3%, 6%, 16%, 31%, 43%, 61%, 71%, 81%, 91% {
-        color: #ff471a;
-        text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a, 0 0 25px #ff471a, 0 0 45px #ff471a;
-      }
+      0%, 80%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
+      81%, 82%, 83% { color: #ff471a; text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a; }
+      85%, 87% { color: #d13610; text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a; }
     }
 
     p {
@@ -77,18 +72,18 @@
 <body>
   <h1>Look at you go!</h1>
   <p>
-    If you stopped here I would be super duper proud type shit. But where's the fun in that! Here's your next clue.
+    Congratulations! You're amazing, I just want you to know that. Honestly I didn't even climb up there myself, so I really commend your determination!  
+    If you stopped here I would be super duper proud. But where's the fun in that! Here's your next clue.
   </p>
 
-  <div style="height:20px;"></div> <!-- Space before the clue -->
+  <div class="timer" id="countdown">24:00:00</div>
 
   <div class="clue">
     <p>
-      I really wish I could play <strong>Fortnite</strong> or <strong>Valorant</strong>. I don't need Tom but I really need <strong>Jerry</strong>. Some cakes are incomplete, without a certain <strong>berry</strong>.
+      I wish I could play <strong>Fortnite</strong> or <strong>Valorant</strong>. I don't need Tom, but I really need <strong>Jerry</strong>,  
+      some cakes are incomplete without a certain <strong>berry</strong>.
     </p>
   </div>
-
-  <div class="timer" id="countdown">24:00:00</div>
 
   <!-- Reset timer button (for you only) -->
   <button id="resetButton">Reset Timer</button>
@@ -97,7 +92,6 @@
     // ====== TIMER LOGIC ======
     const countdownEl = document.getElementById("countdown");
     const resetButton = document.getElementById("resetButton");
-
     const totalSeconds = 24 * 60 * 60; // 24 hours
     const endTimeKey = "huntEndTime";
     let countdownInterval;
@@ -137,9 +131,10 @@
       }
     });
 
+    // Start timer only when QR code adds ?start=true
     const params = new URLSearchParams(window.location.search);
     if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
-      resetTimer(); // start timer on first scan
+      resetTimer();
     }
 
     startCountdown();
@@ -165,3 +160,4 @@
   </script>
 </body>
 </html>
+
