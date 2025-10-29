@@ -90,13 +90,13 @@
 
   <div class="clue">
     <p>
+      <strong>I really wish I could play Marvel Rivals or Valorant.</strong><br>
       I don’t need Tom but I really need <strong>Jerry</strong>.<br>
       You already have the milkshake — you’re just missing the <strong>cherry</strong>.<br>
-      <strong>You better hurry — that timer is getting scary!</strong>
     </p>
   </div>
 
-  <div class="timer" id="countdown">00:00:00</div>
+  <div class="timer" id="countdown">24:00:00</div>
   <button id="resetButton">Reset Timer</button>
 
   <script>
@@ -106,15 +106,15 @@
 
     const totalSeconds = 24 * 60 * 60; // 24 hours
     const endTimeKey = "huntEndTime";
-    let countdownInterval;
+    let countdownInterval = null;
 
-    function startCountdown() {
-      const endTime = localStorage.getItem(endTimeKey);
-      if (!endTime) return;
-
+    function startCountdownInterval() {
+      // Only start the interval if an end time exists
+      const raw = localStorage.getItem(endTimeKey);
+      if (!raw) return;
       clearInterval(countdownInterval);
       countdownInterval = setInterval(() => {
-        const remaining = Math.floor((endTime - Date.now()) / 1000);
+        const remaining = Math.floor((parseInt(raw, 10) - Date.now()) / 1000);
         if (remaining <= 0) {
           clearInterval(countdownInterval);
           countdownEl.textContent = "00:00:00";
@@ -129,8 +129,8 @@
 
     function resetTimer() {
       const newEnd = Date.now() + totalSeconds * 1000;
-      localStorage.setItem(endTimeKey, newEnd);
-      startCountdown();
+      localStorage.setItem(endTimeKey, newEnd.toString());
+      startCountdownInterval();
     }
 
     resetButton.addEventListener("click", () => {
@@ -143,12 +143,20 @@
       }
     });
 
+    // IMPORTANT: Only initialize timer if:
+    // - an endTime exists in localStorage (normal gameplay continuation), OR
+    // - URL contains ?start=true (QR scan) AND there is NOT already an endTime.
     const params = new URLSearchParams(window.location.search);
-    if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
-      resetTimer(); // start timer on first scan
-    }
+    const hasEnd = !!localStorage.getItem(endTimeKey);
 
-    startCountdown();
+    if (params.get("start") === "true" && !hasEnd) {
+      // QR scan starting the hunt for this device
+      resetTimer();
+    } else if (hasEnd) {
+      // Continue existing timer (do not overwrite)
+      startCountdownInterval();
+    } // otherwise do nothing (no timer started)
+
     // ====== END TIMER LOGIC ======
 
     // ====== GOOGLE FORM LOGGING ======
@@ -168,6 +176,11 @@
       logVisit("Clue 3 — Look at you go!");
     });
     // ====== END FORM LOGGING ======
+
+    // ====== QUICK DEV TIP ======
+    // If the countdown is starting when you didn't scan the QR, run this in the browser console to clear any previous test:
+    // localStorage.removeItem('huntEndTime')
+    // Then reload the page (without ?start=true) to confirm timer is NOT running.
   </script>
 </body>
 </html>
