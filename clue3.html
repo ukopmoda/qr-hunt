@@ -24,24 +24,12 @@
       animation: flicker 10s infinite;
     }
 
-    /* SPOOKY GAS STATION FLICKER */
+    /* GAS STATION SIGN FLICKER - irregular bursts */
     @keyframes flicker {
-      0%, 10%, 12%, 20%, 22%, 25%, 30%, 70%, 100% {
-        color: #b22a0f;
-        text-shadow: 0 0 2px #000;
-      }
-      11%, 13%, 21%, 23%, 26%, 31%, 72%, 73%, 75%, 90%, 91%, 93%, 94% {
-        color: #ff471a;
-        text-shadow:
-          0 0 5px #ff471a,
-          0 0 15px #ff471a,
-          0 0 25px #ff471a,
-          0 0 45px #ff471a;
-      }
-      40%, 41%, 60%, 61%, 96%, 97%, 98% {
-        color: #d13610;
-        text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a;
-      }
+      0%, 85%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
+      86%, 87%, 88% { color: #ff471a; text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a, 0 0 25px #ff471a, 0 0 45px #ff471a; }
+      90%, 91% { color: #d13610; text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a; }
+      94% { color: #ff471a; text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a; }
     }
 
     p {
@@ -85,18 +73,20 @@
 <body>
   <h1>Look at you go!</h1>
   <p>
-    You’re doing great, but time is running out!  
+    You're doing great, Twin!  
   </p>
+
+  <div class="timer" id="countdown">24:00:00</div>
 
   <div class="clue">
     <p>
-      <strong>I really wish I could play Marvel Rivals or Valorant.</strong><br>
-      I don’t need Tom but I really need <strong>Jerry</strong>.<br>
-      You already have the milkshake — you’re just missing the <strong>cherry</strong>.<br>
+      I don’t need Tom but I really need <strong>Jerry</strong>.  
+      Some cakes are incomplete without a certain <strong>berry</strong>.  
+      Marvel Rivals or <strong>Valorant</strong> could wait, but the hunt won’t!
     </p>
   </div>
 
-  <div class="timer" id="countdown">24:00:00</div>
+  <!-- Reset timer button (for you only) -->
   <button id="resetButton">Reset Timer</button>
 
   <script>
@@ -106,15 +96,15 @@
 
     const totalSeconds = 24 * 60 * 60; // 24 hours
     const endTimeKey = "huntEndTime";
-    let countdownInterval = null;
+    let countdownInterval;
 
-    function startCountdownInterval() {
-      // Only start the interval if an end time exists
-      const raw = localStorage.getItem(endTimeKey);
-      if (!raw) return;
+    function startCountdown() {
+      const endTime = localStorage.getItem(endTimeKey);
+      if (!endTime) return;
+
       clearInterval(countdownInterval);
       countdownInterval = setInterval(() => {
-        const remaining = Math.floor((parseInt(raw, 10) - Date.now()) / 1000);
+        const remaining = Math.floor((endTime - Date.now()) / 1000);
         if (remaining <= 0) {
           clearInterval(countdownInterval);
           countdownEl.textContent = "00:00:00";
@@ -129,8 +119,8 @@
 
     function resetTimer() {
       const newEnd = Date.now() + totalSeconds * 1000;
-      localStorage.setItem(endTimeKey, newEnd.toString());
-      startCountdownInterval();
+      localStorage.setItem(endTimeKey, newEnd);
+      startCountdown();
     }
 
     resetButton.addEventListener("click", () => {
@@ -143,21 +133,14 @@
       }
     });
 
-    // IMPORTANT: Only initialize timer if:
-    // - an endTime exists in localStorage (normal gameplay continuation), OR
-    // - URL contains ?start=true (QR scan) AND there is NOT already an endTime.
     const params = new URLSearchParams(window.location.search);
-    const hasEnd = !!localStorage.getItem(endTimeKey);
+    if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
+      resetTimer(); // start timer on first scan
+    }
 
-    if (params.get("start") === "true" && !hasEnd) {
-      // QR scan starting the hunt for this device
-      resetTimer();
-    } else if (hasEnd) {
-      // Continue existing timer (do not overwrite)
-      startCountdownInterval();
-    } // otherwise do nothing (no timer started)
-
+    startCountdown();
     // ====== END TIMER LOGIC ======
+
 
     // ====== GOOGLE FORM LOGGING ======
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
@@ -176,11 +159,6 @@
       logVisit("Clue 3 — Look at you go!");
     });
     // ====== END FORM LOGGING ======
-
-    // ====== QUICK DEV TIP ======
-    // If the countdown is starting when you didn't scan the QR, run this in the browser console to clear any previous test:
-    // localStorage.removeItem('huntEndTime')
-    // Then reload the page (without ?start=true) to confirm timer is NOT running.
   </script>
 </body>
 </html>
