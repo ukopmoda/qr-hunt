@@ -5,98 +5,143 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Twin!</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@300;600&display=swap');
+
     body {
-      background-color: #000;
-      color: #f8f8f8;
-      font-family: 'Courier New', monospace;
+      background-color: #0b0b0b;
+      color: #e8e8e8;
+      font-family: 'Montserrat', sans-serif;
       text-align: center;
-      padding: 40px;
+      padding: 60px 20px;
+      background: radial-gradient(circle at top, #151515 0%, #000 100%);
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-      color: #fff;
-      animation: flicker 8s infinite;
+      font-family: 'Creepster', cursive;
+      font-size: 3rem;
+      color: #ff471a;
+      text-shadow: 0 0 4px #000;
+      animation: flicker 10s infinite;
     }
 
+    /* Broken gas station flicker effect */
     @keyframes flicker {
-      0%, 18%, 22%, 25%, 53%, 57%, 100% {
-        opacity: 1;
+      0%, 7%, 12%, 17%, 22%, 100% {
+        color: #b22a0f;
+        text-shadow: 0 0 2px #000;
       }
-      20%, 24%, 55% {
-        opacity: 0.3;
+      8%, 9%, 13%, 14%, 18%, 19%, 23%, 24% {
+        color: #ff471a;
+        text-shadow:
+          0 0 5px #ff471a,
+          0 0 15px #ff471a,
+          0 0 25px #ff471a,
+          0 0 45px #ff471a;
       }
-      40% {
-        opacity: 0.6;
+      25%, 26%, 27% {
+        color: #d13610;
+        text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a;
       }
     }
 
-    .message {
-      font-size: 1.2em;
-      line-height: 1.6em;
+    p {
+      font-size: 1.1rem;
+      color: #d0d0d0;
       max-width: 600px;
-      margin: 0 auto;
+      margin: 20px auto;
     }
 
-    b {
-      color: #ffb347;
-    }
-
-    #timer {
+    .timer {
+      font-size: 2rem;
+      font-weight: 600;
       margin-top: 30px;
-      font-size: 1.5em;
-      color: #ffcc00;
-      letter-spacing: 1px;
+      color: #ff471a;
     }
 
     button {
-      margin-top: 25px;
-      background-color: #ffcc00;
-      color: #000;
+      margin-top: 20px;
+      background: #ff471a;
+      color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
+      padding: 12px 24px;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
+      transition: all 0.2s;
     }
 
     button:hover {
-      background-color: #fff700;
+      background: #e63e14;
+      transform: scale(1.05);
+    }
+
+    .clue {
+      margin-top: 40px;
+      font-style: italic;
+      color: #f3f3f3;
     }
   </style>
 </head>
 <body>
   <h1>Twin!</h1>
+  <p>
+    Congratulations! You're amazing, I just want you to know that. Honestly I didn't even climb up there myself, so I really commend your determination!
+  </p>
+  <p>
+    You're onto the next hint! Try looking around where we first met. Oh and don't forget to do those modules, it could put your <b>registration</b> on hold.  
+    Lol I'm really in here like the riddler.
+  </p>
 
-  <div class="message">
-    <p>Congratulations! You're amazing, I just want you to know that. Honestly I didn't even climb up there myself, so I really commend your determination!</p>
-    <br />
-    <p>You're onto the next hint!</p>
-    <p>Try looking around where we first met. Oh and don't forget to do those modules, it could put your <b>registration</b> on hold. Lol I'm really in here like the riddler.</p>
-  </div>
+  <div class="timer" id="countdown">24:00:00</div>
 
-  <div id="timer">Loading timer...</div>
+  <button id="resetButton">Reset Timer</button>
 
   <script>
-    // Shared timer logic between pages
-    let startTime = localStorage.getItem("huntStartTime");
-    if (!startTime) {
-      startTime = Date.now();
-      localStorage.setItem("huntStartTime", startTime);
+    // ====== TIMER LOGIC ======
+    const countdownEl = document.getElementById("countdown");
+    const resetButton = document.getElementById("resetButton");
+
+    const totalSeconds = 24 * 60 * 60; // 24 hours
+    const endTimeKey = "huntEndTime";
+    let countdownInterval;
+
+    function startCountdown() {
+      const endTime = localStorage.getItem(endTimeKey);
+      if (!endTime) return;
+
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        const remaining = Math.floor((endTime - Date.now()) / 1000);
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+          countdownEl.textContent = "00:00:00";
+        } else {
+          const h = String(Math.floor(remaining / 3600)).padStart(2, "0");
+          const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+          const s = String(remaining % 60).padStart(2, "0");
+          countdownEl.textContent = `${h}:${m}:${s}`;
+        }
+      }, 1000);
     }
 
-    function updateTimer() {
-      const now = Date.now();
-      const elapsed = Math.floor((now - startTime) / 1000);
-      const minutes = Math.floor(elapsed / 60);
-      const seconds = elapsed % 60;
-      document.getElementById("timer").textContent =
-        `Elapsed Time: ${minutes}m ${seconds}s`;
+    function resetTimer() {
+      const newEnd = Date.now() + totalSeconds * 1000;
+      localStorage.setItem(endTimeKey, newEnd);
+      startCountdown();
     }
 
-    setInterval(updateTimer, 1000);
-    updateTimer();
+    resetButton.addEventListener("click", () => {
+      const pass = prompt("Enter reset password:");
+      if (pass === "pumpkinpatch") {
+        resetTimer();
+        alert("Timer reset successfully!");
+      } else {
+        alert("Incorrect password.");
+      }
+    });
+
+    startCountdown();
   </script>
 </body>
 </html>
+
