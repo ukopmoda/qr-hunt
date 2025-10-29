@@ -135,6 +135,25 @@ function resetTimer() {
     alert("Wrong password!");
   }
 }
+let timerPaused = false;
+
+function pauseResumeTimer() {
+  const password = prompt("Enter password to pause/resume the timer:");
+  if(password !== "YOURSECRET") {
+    alert("Wrong password!");
+    return;
+  }
+
+  timerPaused = !timerPaused;
+
+  if(timerPaused) {
+    clearInterval(timerInterval); // stop the timer interval
+    alert("Timer paused!");
+  } else {
+    startTimer(); // restart the interval
+    alert("Timer resumed!");
+  }
+}
 
 
 document.getElementById('reset-btn').addEventListener('click', resetTimer);
