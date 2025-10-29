@@ -20,14 +20,15 @@
       font-family: 'Creepster', cursive;
       color: #ff471a;
       font-size: 3rem;
-      animation: flicker 2s infinite;
+      animation: flicker 5s infinite;
     }
 
+    /* Less frequent flicker */
     @keyframes flicker {
-      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+      0%, 90%, 100% {
         text-shadow: 0 0 4px #ff471a, 0 0 11px #ff471a, 0 0 19px #ff471a;
       }
-      20%, 24%, 55% {
+      92%, 96% {
         text-shadow: none;
       }
     }
@@ -71,7 +72,7 @@
   </style>
 </head>
 <body>
-  <h1>Hey Berkington</h1>
+  <h1>Hey Berkeley</h1>
   <p>
     So it’s Halloween, yay! 🎃 I wanted to do a little Saw/Prop Hunt type thing or something.  
     You can ask your friends for help cuz it’s lowkey kinda hard, oh and I won’t give you any hints haha.  
