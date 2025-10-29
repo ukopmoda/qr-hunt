@@ -21,15 +21,19 @@
       font-size: 3rem;
       color: #ff471a;
       text-shadow: 0 0 4px #000;
-      animation: flicker 10s infinite;
+      animation: flicker 12s infinite;
     }
 
-    /* GAS STATION SIGN FLICKER - irregular bursts */
+    /* Irregular spooky gas-station flicker */
     @keyframes flicker {
-      0%, 85%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
-      86%, 87%, 88% { color: #ff471a; text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a, 0 0 25px #ff471a, 0 0 45px #ff471a; }
-      90%, 91% { color: #d13610; text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a; }
-      94% { color: #ff471a; text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a; }
+      0%, 2%, 5%, 15%, 23%, 30%, 35%, 42%, 50%, 60%, 70%, 80%, 90%, 100% {
+        color: #b22a0f;
+        text-shadow: 0 0 2px #000;
+      }
+      3%, 6%, 16%, 31%, 43%, 61%, 71%, 81%, 91% {
+        color: #ff471a;
+        text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a, 0 0 25px #ff471a, 0 0 45px #ff471a;
+      }
     }
 
     p {
@@ -73,20 +77,18 @@
 <body>
   <h1>Look at you go!</h1>
   <p>
-    You're doing great, Twin!  
-    <br><br>
-    ****NOT THE TITLE**** If you stopped here I would be super duper proud. But where's the fun in that! Here's your next clue.
+    If you stopped here I would be super duper proud type shit. But where's the fun in that! Here's your next clue.
   </p>
 
-  <div class="timer" id="countdown">24:00:00</div>
+  <div style="height:20px;"></div> <!-- Space before the clue -->
 
   <div class="clue">
     <p>
-      <strong>Valorant</strong>, Marvel Rivals — could wait, but the hunt won’t!<br><br>
-      I don’t need Tom but I really need <strong>Jerry</strong>.  
-      Some cakes are incomplete without a certain <strong>berry</strong>.
+      Valorant. I don't need Tom but I really need <strong>Jerry</strong>. Some cakes are incomplete, without a certain <strong>berry</strong>.
     </p>
   </div>
+
+  <div class="timer" id="countdown">24:00:00</div>
 
   <!-- Reset timer button (for you only) -->
   <button id="resetButton">Reset Timer</button>
@@ -142,7 +144,6 @@
 
     startCountdown();
     // ====== END TIMER LOGIC ======
-
 
     // ====== GOOGLE FORM LOGGING ======
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
