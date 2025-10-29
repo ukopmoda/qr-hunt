@@ -21,16 +21,16 @@
       font-size: 3rem;
       color: #ff471a;
       text-shadow: 0 0 4px #000;
-      animation: flicker 12s infinite;
+      animation: flicker 10s infinite;
     }
 
-    /* Broken gas station flicker effect */
+    /* IRREGULAR SPOOKY GAS STATION FLICKER */
     @keyframes flicker {
-      0%, 85%, 100% {
+      0%, 10%, 12%, 20%, 22%, 25%, 30%, 70%, 100% {
         color: #b22a0f;
         text-shadow: 0 0 2px #000;
       }
-      86%, 87%, 88%, 89%, 90%, 91% {
+      11%, 13%, 21%, 23%, 26%, 31%, 72%, 73%, 75%, 90%, 91%, 93%, 94% {
         color: #ff471a;
         text-shadow:
           0 0 5px #ff471a,
@@ -38,7 +38,7 @@
           0 0 25px #ff471a,
           0 0 45px #ff471a;
       }
-      92%, 93%, 94%, 95%, 96%, 97%, 98%, 99% {
+      40%, 41%, 60%, 61%, 96%, 97%, 98% {
         color: #d13610;
         text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a;
       }
@@ -85,20 +85,18 @@
 <body>
   <h1>Look at you go!</h1>
   <p>
-    You’re doing great, but time is running out! Here’s your next clue, twin.
+    You’re doing great, but time is running out!  
   </p>
 
   <div class="clue">
     <p>
-      I really wish I could play <strong>Type Soul</strong> or <strong>Valorant</strong>.  
-      The only problem is… my Xbox doesn’t exactly come with a keyboard and mouse.  
-    </p>
-    <p>
-      <em>(Maybe someone else’s setup could help me out?)</em>
+      <strong>I really wish I could play Marvel Rivals or Valorant.</strong><br>
+      I may have Tom, but I don’t have Jerry...<br>
+      <strong>You better hurry — that timer is getting scary!</strong>
     </p>
   </div>
 
-  <div class="timer" id="countdown">24:00:00</div>
+  <div class="timer" id="countdown">00:00:00</div>
   <button id="resetButton">Reset Timer</button>
 
   <script>
@@ -173,3 +171,4 @@
   </script>
 </body>
 </html>
+
