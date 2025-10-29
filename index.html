@@ -94,28 +94,21 @@ function updateTimerUI() {
     el.textContent = "24:00:00";
     return;
   }
+
   const end = start + TOTAL_HOURS * 3600 * 1000;
-  const rem = Math.max(0, end - Date.now());
+  let rem = Math.max(0, end - Date.now());
+
+  // freeze timer if paused
+  if (timerPaused) {
+    rem = parseInt(el.getAttribute('data-remaining') || rem);
+  } else {
+    el.setAttribute('data-remaining', rem);
+  }
+
   const hh = Math.floor(rem / 3600000).toString().padStart(2, '0');
   const mm = Math.floor((rem % 3600000) / 60000).toString().padStart(2, '0');
   const ss = Math.floor((rem % 60000) / 1000).toString().padStart(2, '0');
   el.textContent = `${hh}:${mm}:${ss}`;
-}
-
-function startTimer() {
-  // clear any previous timer interval
-  if (timerInterval) clearInterval(timerInterval);
-
-  // save start time if not already set
-  if (!localStorage.getItem('hunt_start')) {
-    localStorage.setItem('hunt_start', Date.now().toString());
-  }
-
-  // update immediately
-  updateTimerUI();
-
-  // start interval
-  timerInterval = setInterval(updateTimerUI, 1000);
 }
 
 function resetTimer() {
