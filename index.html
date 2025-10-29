@@ -8,41 +8,61 @@
     @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@300;600&display=swap');
 
     body {
-      background-color: #0e0e0e;
-      color: #f8f8f8;
+      background-color: #0b0b0b;
+      color: #e8e8e8;
       font-family: 'Montserrat', sans-serif;
       text-align: center;
       padding: 60px 20px;
-      background: radial-gradient(circle at top, #1a1a1a 0%, #000 100%);
-      overflow: hidden;
+      background: radial-gradient(circle at top, #151515 0%, #000 100%);
     }
 
     h1 {
       font-family: 'Creepster', cursive;
-      color: #ff471a;
       font-size: 3rem;
-      animation: brokenFlicker 12s infinite;
+      color: #ff471a;
+      text-shadow: 0 0 4px #000;
+      animation: flicker 10s infinite steps(1, end);
     }
 
-    /* Irregular broken neon flicker */
-    @keyframes brokenFlicker {
-      0%, 4%, 6%, 7%, 13%, 14%, 15%, 22%, 25%, 28%, 55%, 57%, 63%, 68%, 72%, 85%, 86%, 87%, 100% {
-        opacity: 1;
-        text-shadow: 0 0 4px #ff471a, 0 0 12px #ff471a, 0 0 20px #ff471a;
-      }
-      5%, 8%, 9%, 16%, 26%, 27%, 30%, 58%, 64%, 75%, 88%, 91% {
-        opacity: 0.3;
+    /* BROKEN GAS STATION SIGN FLICKER */
+    @keyframes flicker {
+      0%, 87%, 100% {
+        color: #b22a0f;
         text-shadow: none;
       }
-      10%, 17%, 23%, 31%, 61%, 73%, 83%, 92%, 97% {
-        opacity: 0.05;
+      88%, 89% {
+        color: #ff471a;
+        text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a;
+      }
+      90% {
+        color: #000;
+        text-shadow: none;
+      }
+      91%, 92% {
+        color: #ff471a;
+        text-shadow: 0 0 8px #ff471a, 0 0 25px #ff471a;
+      }
+      93%, 94% {
+        color: #d13610;
+        text-shadow: 0 0 5px #ff471a, 0 0 10px #ff471a;
+      }
+      95%, 96% {
+        color: #000;
+        text-shadow: none;
+      }
+      97%, 98% {
+        color: #ff471a;
+        text-shadow: 0 0 15px #ff471a, 0 0 30px #ff471a, 0 0 45px #ff471a;
+      }
+      99% {
+        color: #b22a0f;
         text-shadow: none;
       }
     }
 
     p {
       font-size: 1.1rem;
-      color: #e0e0e0;
+      color: #d0d0d0;
       max-width: 600px;
       margin: 20px auto;
     }
@@ -76,58 +96,9 @@
       font-style: italic;
       color: #f3f3f3;
     }
-
-    /* --- START SCREEN --- */
-    #start-screen {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.96);
-      color: #ff471a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: opacity 0.8s ease;
-    }
-
-    #start-screen.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #start-screen h2 {
-      font-family: 'Creepster', cursive;
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-shadow: 0 0 8px #ff471a;
-    }
-
-    #startButton {
-      background: #ff471a;
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-    }
-
-    #startButton:hover {
-      transform: scale(1.1);
-      background: #e63e14;
-    }
   </style>
 </head>
 <body>
-  <!-- START SCREEN -->
-  <div id="start-screen">
-    <h2>Ready to Begin?</h2>
-    <button id="startButton">Start</button>
-  </div>
-
   <h1>Hey Berkeley</h1>
   <p>
     So it’s Halloween, yay! 🎃 I wanted to do a little Saw/Prop Hunt type thing or something.  
@@ -145,13 +116,15 @@
     </p>
   </div>
 
+  <!-- Reset timer button (for you only) -->
   <button id="resetButton">Reset Timer</button>
 
   <script>
     // ====== TIMER LOGIC ======
     const countdownEl = document.getElementById("countdown");
     const resetButton = document.getElementById("resetButton");
-    const totalSeconds = 24 * 60 * 60;
+
+    const totalSeconds = 24 * 60 * 60; // 24 hours
     const endTimeKey = "huntEndTime";
     let countdownInterval;
 
@@ -192,8 +165,7 @@
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
-      resetTimer();
-      document.getElementById("start-screen").classList.add("hidden");
+      resetTimer(); // start timer on first scan
     }
 
     startCountdown();
@@ -215,15 +187,8 @@
     window.addEventListener("load", () => {
       logVisit("Clue 1 — Good luck you got this!");
     });
-
-    // ====== START SCREEN LOGIC ======
-    const startScreen = document.getElementById("start-screen");
-    const startButton = document.getElementById("startButton");
-
-    startButton.addEventListener("click", () => {
-      startScreen.classList.add("hidden");
-      if (!localStorage.getItem(endTimeKey)) resetTimer();
-    });
+    // ====== END FORM LOGGING ======
   </script>
 </body>
 </html>
+
