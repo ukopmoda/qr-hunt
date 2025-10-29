@@ -134,26 +134,45 @@ function resetTimer() {
   } else {
     alert("Wrong password!");
   }
-}
+let timerInterval;
 let timerPaused = false;
 
-function pauseResumeTimer() {
-  const password = prompt("Enter password to pause/resume the timer:");
-  if(password !== "YOURSECRET") {
-    alert("Wrong password!");
+function updateTimerUI() {
+  const start = parseInt(localStorage.getItem('hunt_start') || '0', 10);
+  const el = document.getElementById('global-timer');
+  if (!start) {
+    el.textContent = "24:00:00";
     return;
   }
 
-  timerPaused = !timerPaused;
+  const end = start + TOTAL_HOURS * 3600 * 1000;
+  let rem = Math.max(0, end - Date.now());
 
-  if(timerPaused) {
-    clearInterval(timerInterval); // stop the timer interval
-    alert("Timer paused!");
+  // if paused, freeze remaining time
+  if (timerPaused) {
+    rem = parseInt(el.getAttribute('data-remaining') || rem);
   } else {
-    startTimer(); // restart the interval
-    alert("Timer resumed!");
+    el.setAttribute('data-remaining', rem);
   }
+
+  const hh = Math.floor(rem / 3600000).toString().padStart(2, '0');
+  const mm = Math.floor((rem % 3600000) / 60000).toString().padStart(2, '0');
+  const ss = Math.floor((rem % 60000) / 1000).toString().padStart(2, '0');
+  el.textContent = `${hh}:${mm}:${ss}`;
 }
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerPaused = false; // start fresh
+  updateTimerUI();
+  timerInterval = setInterval(updateTimerUI, 1000);
+}
+
+function pauseResumeTimer() {
+  const password = prompt("Enter password to pause/resume the timer:");
+  if (password !== "YOURSECRET") {
+    alert("Wrong password!");
+    ret
 
 
 document.getElementById('reset-btn').addEventListener('click', resetTimer);
