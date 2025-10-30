@@ -68,7 +68,6 @@
   </p>
 
   <script>
-    // Confetti generator (stops after 3 seconds)
     function createConfetti(count = 100) {
       for (let i = 0; i < count; i++) {
         const confetti = document.createElement('div');
@@ -81,8 +80,10 @@
       }
     }
 
+    // Spawn confetti repeatedly for only 3 seconds
     window.addEventListener('load', () => {
-      createConfetti();
+      const interval = setInterval(createConfetti, 100);
+      setTimeout(() => clearInterval(interval), 3000);
     });
   </script>
 </body>
