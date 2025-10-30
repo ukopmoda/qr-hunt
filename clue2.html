@@ -26,19 +26,19 @@
 
     /* EXACT Clue 1 flicker */
     @keyframes flicker {
-      0%, 0.5%, 1%, 2%, 3%, 5%, 10%, 15%, 25%, 35%, 55%, 75%, 85%, 95%, 100% {
+      0%, 5%, 10%, 15%, 25%, 35%, 55%, 75%, 85%, 95%, 100% {
         opacity: 1;
         text-shadow: 0 0 4px #000;
       }
-      0.6%, 1.1%, 2.1%, 3.1%, 5.1%, 10.1%, 15.1%, 25.1%, 35.1%, 55.1%, 75.1%, 85.1%, 95.1% {
+      6%, 11%, 16%, 26%, 36%, 56%, 76%, 86%, 96% {
         opacity: 0.6;
         text-shadow: 0 0 2px #ff471a;
       }
-      0.7%, 1.2%, 2.2%, 3.2%, 5.2%, 10.2%, 15.2%, 25.2%, 35.2%, 55.2%, 75.2%, 85.2%, 95.2% {
+      7%, 12%, 17%, 27%, 37%, 57%, 77%, 87%, 97% {
         opacity: 0.2;
         text-shadow: none;
       }
-      0.8%, 1.8%, 2.8%, 5.8%, 15.8%, 25.8%, 35.8%, 55.8%, 75.8%, 85.8%, 95.8% {
+      8%, 18%, 28%, 58%, 78%, 98% {
         opacity: 1;
         text-shadow:
           0 0 5px #ff471a,
@@ -58,7 +58,7 @@
     .timer {
       font-size: 2rem;
       font-weight: 600;
-      margin: 30px 0;
+      margin: 20px 0;
       color: #ff471a;
     }
 
@@ -89,6 +89,7 @@
 <body>
   <h1>Twin!</h1>
 
+  <!-- Subtext -->
   <p>
     Congratulations! I'm proud of you!
   </p>
@@ -99,7 +100,7 @@
     Lol I’m really in here like the riddler.
   </p>
 
-  <!-- Timer inserted here -->
+  <!-- Timer placed here -->
   <div class="timer" id="countdown">24:00:00</div>
 
   <!-- Clue text -->
@@ -110,7 +111,7 @@
     </p>
   </div>
 
-  <!-- Reset timer button moved to bottom -->
+  <!-- Reset timer button at bottom -->
   <button id="resetButton">Reset Timer</button>
 
   <script>
@@ -122,7 +123,7 @@
     const endTimeKey = "huntEndTime";
     let countdownInterval;
 
-    function startCountdown() {
+    function updateCountdown() {
       const endTime = localStorage.getItem(endTimeKey);
       if (!endTime) return;
 
@@ -144,7 +145,7 @@
     function resetTimer() {
       const newEnd = Date.now() + totalSeconds * 1000;
       localStorage.setItem(endTimeKey, newEnd);
-      startCountdown();
+      updateCountdown();
     }
 
     resetButton.addEventListener("click", () => {
@@ -157,13 +158,12 @@
       }
     });
 
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
-      resetTimer(); // start timer on first scan
+    // Start timer if already set
+    if (!localStorage.getItem(endTimeKey)) {
+      resetTimer(); // first scan
+    } else {
+      updateCountdown();
     }
-
-    startCountdown();
-    // ====== END TIMER LOGIC ======
 
     // ====== GOOGLE FORM LOGGING ======
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
@@ -181,7 +181,6 @@
     window.addEventListener("load", () => {
       logVisit("Clue 2 — Twin!");
     });
-    // ====== END FORM LOGGING ======
   </script>
 </body>
 </html>
