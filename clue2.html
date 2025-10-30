@@ -24,7 +24,7 @@
       animation: flicker 10s infinite;
     }
 
-    /* EXACT Clue 1 flicker */
+    /* Flicker effect from Clue 1 */
     @keyframes flicker {
       0%, 5%, 10%, 15%, 25%, 35%, 55%, 75%, 85%, 95%, 100% {
         opacity: 1;
@@ -78,12 +78,6 @@
       background: #e63e14;
       transform: scale(1.05);
     }
-
-    .clue {
-      margin-top: 40px;
-      font-style: italic;
-      color: #f3f3f3;
-    }
   </style>
 </head>
 <body>
@@ -91,25 +85,18 @@
 
   <!-- Subtext -->
   <p>
-    Congratulations! I'm proud of you!
+    Congratulations! You're getting the hang of this I guess. I would have made something about the ambiguous acorn but I didn't know where your CARS class was, since you're late to it and everything....
   </p>
 
+  <!-- Timer -->
+  <div class="timer" id="countdown">24:00:00</div>
+
+  <!-- Clue text -->
   <p>
     You're onto the next hint! Try looking around where we first met.  
     Oh and don’t forget to do those modules — it could put your <strong>registration</strong> on hold.  
     Lol I’m really in here like the riddler.
   </p>
-
-  <!-- Timer placed here -->
-  <div class="timer" id="countdown">24:00:00</div>
-
-  <!-- Clue text -->
-  <div class="clue">
-    <p>
-      Look carefully around your surroundings — your next clue awaits near familiar spots.  
-      Seek the secrets hidden in plain sight to move forward.
-    </p>
-  </div>
 
   <!-- Reset timer button at bottom -->
   <button id="resetButton">Reset Timer</button>
@@ -184,3 +171,4 @@
   </script>
 </body>
 </html>
+
