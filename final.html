@@ -67,24 +67,31 @@
     But yeah I just wanted to try to do something fun for u twin, I hope the end prize isn't too disappointing as well, I was really short on time 😢
   </p>
 
-  <script>
-    function createConfetti(count = 100) {
-      for (let i = 0; i < count; i++) {
-        const confetti = document.createElement('div');
-        confetti.classList.add('confetti');
-        confetti.style.left = Math.random() * window.innerWidth + 'px';
-        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        confetti.style.width = confetti.style.height = (Math.random() * 8 + 4) + 'px';
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 3000);
-      }
-    }
+ <script>
+function createConfetti() {
+  const confetti = document.createElement('div');
+  confetti.classList.add('confetti');
+  confetti.style.left = Math.random() * window.innerWidth + 'px';
+  confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+  confetti.style.width = confetti.style.height = (Math.random() * 8 + 4) + 'px';
+  
+  // Random spin & drift
+  const spin = Math.random() * 720 - 360; // -360 to 360 degrees
+  const drift = Math.random() * 100 - 50; // horizontal drift
+  confetti.animate([
+    { transform: `translateX(0px) translateY(0px) rotate(0deg)` },
+    { transform: `translateX(${drift}px) translateY(100vh) rotate(${spin}deg)` }
+  ], { duration: 3000, easing: 'linear' });
+  
+  document.body.appendChild(confetti);
+  setTimeout(() => confetti.remove(), 3000);
+}
 
-    // Spawn confetti repeatedly for only 3 seconds
-    window.addEventListener('load', () => {
-      const interval = setInterval(createConfetti, 100);
-      setTimeout(() => clearInterval(interval), 3000);
-    });
-  </script>
+window.addEventListener('load', () => {
+  const interval = setInterval(createConfetti, 15); // faster spawn
+  setTimeout(() => clearInterval(interval), 3000);  // stop after 3s
+});
+</script>
+
 </body>
 </html>
