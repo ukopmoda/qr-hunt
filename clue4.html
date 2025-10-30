@@ -1,77 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Almost There!</title>
-<style>
-  body {
-    background-color: #0a0a0a;
-    color: #f2f2f2;
-    font-family: 'Courier New', monospace;
-    text-align: center;
-    padding: 40px;
-    overflow: hidden;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Final Clue</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@300;600&display=swap');
 
-  h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    animation: flicker 4s infinite;
-    color: #f44336;
-    text-shadow: 0 0 20px #f44336, 0 0 40px #a00;
-  }
-
-  @keyframes flicker {
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-      opacity: 1;
+    body {
+      background-color: #0b0b0b;
+      color: #e8e8e8;
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
+      padding: 60px 20px;
+      background: radial-gradient(circle at top, #151515 0%, #000 100%);
     }
-    20%, 24%, 55% {
-      opacity: 0.3;
+
+    h1 {
+      font-family: 'Creepster', cursive;
+      font-size: 3rem;
+      color: #ff471a;
+      text-shadow: 0 0 4px #000;
+      animation: softFlicker 12s infinite;
     }
-  }
 
-  video {
-    width: 90%;
-    max-width: 600px;
-    border: 2px solid #f44336;
-    border-radius: 10px;
-    box-shadow: 0 0 20px #f44336;
-    margin-top: 25px;
-  }
+    /* smoother gas station flicker */
+    @keyframes softFlicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+      }
+      19%, 23%, 54%, 56% {
+        opacity: 0.6;
+      }
+      20%, 55% {
+        opacity: 0.3;
+      }
+    }
 
-  p {
-    margin-top: 25px;
-    font-size: 1.2em;
-  }
+    p {
+      font-size: 1.1rem;
+      color: #d0d0d0;
+      max-width: 600px;
+      margin: 20px auto;
+    }
 
-  #resetSection {
-    margin-top: 40px;
-  }
+    video {
+      width: 90%;
+      max-width: 600px;
+      margin-top: 25px;
+      border: 2px solid #ff471a;
+      border-radius: 10px;
+      outline: none;
+    }
 
-  input[type="password"] {
-    padding: 8px;
-    border: 1px solid #f44336;
-    border-radius: 5px;
-    background-color: #111;
-    color: #f2f2f2;
-  }
+    .timer {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-top: 30px;
+      color: #ff471a;
+    }
 
-  button {
-    margin-left: 10px;
-    padding: 8px 15px;
-    background-color: #f44336;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-  }
+    #resetSection {
+      margin-top: 40px;
+    }
 
-  button:hover {
-    background-color: #b71c1c;
-  }
-</style>
+    input[type="password"] {
+      padding: 8px;
+      border: 1px solid #ff471a;
+      border-radius: 5px;
+      background-color: #111;
+      color: #f2f2f2;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 8px 15px;
+      background-color: #ff471a;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #cc3311;
+    }
+  </style>
 </head>
 <body>
   <h1>Almost There!</h1>
@@ -90,12 +105,12 @@
 
   <script>
     function checkPassword() {
-      const password = document.getElementById('passwordInput').value.trim().toLowerCase();
-      if (password === 'pumpkinpatch') {
+      const input = document.getElementById('passwordInput').value.trim().toLowerCase();
+      if (input === 'pumpkinpatch') {
         localStorage.removeItem('timerStart');
         alert('Timer reset! Refresh the page or scan again.');
       } else {
-        alert('Incorrect password, try again.');
+        alert('Incorrect password. Try again.');
       }
     }
   </script>
