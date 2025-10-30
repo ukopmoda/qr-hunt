@@ -76,7 +76,7 @@
       left: 50%;
       opacity: 0.7;
       pointer-events: none;
-      animation: fall 3s linear infinite;
+      animation: fall 3s linear forwards;
     }
 
     @keyframes fall {
@@ -94,7 +94,7 @@
   </p>
 
   <script>
-    // Confetti generator
+    // Confetti generator (stops after 3s)
     function createConfetti() {
       const confettiCount = 100;
       for (let i = 0; i < confettiCount; i++) {
@@ -102,19 +102,19 @@
         confetti.classList.add('confetti');
         confetti.style.left = Math.random() * window.innerWidth + 'px';
         confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
         confetti.style.width = confetti.style.height = (Math.random() * 8 + 4) + 'px';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
         document.body.appendChild(confetti);
 
-        // Remove confetti after animation
         setTimeout(() => confetti.remove(), 3000);
       }
     }
 
     window.addEventListener('load', () => {
-      createConfetti();
-      setInterval(createConfetti, 500); // keep generating confetti for effect
+      createConfetti(); // only generate once
     });
   </script>
 </body>
 </html>
+
+
