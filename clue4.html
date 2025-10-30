@@ -24,7 +24,7 @@
       animation: flicker 10s infinite;
     }
 
-    /* Original flicker effect (smooth, spooky, not distracting) */
+    /* Original flicker effect */
     @keyframes flicker {
       0%, 89%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
       90%, 91%, 92%, 93%, 94%, 95% {
@@ -76,25 +76,40 @@
     button:hover {
       background: #d93b10;
     }
+
+    #hint {
+      display: none;
+      margin-top: 20px;
+      color: #ff471a;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <h1>Almost There!</h1>
 
-  <p>If you're stuck just aura farm and you'll probably figure it out.</p>
+  <button id="hintBtn">If you're stuck</button>
+  <p id="hint">The treasure is under a certain stairwell!</p>
 
   <div class="timer" id="countdown">--:--:--</div>
   <button id="reset">Reset Timer</button>
 
   <iframe 
-    src="https://drive.google.com/file/d/1lsJeCMT6c2wYbNkhE8NHrjTiteDBAjAw/preview" 
+    src="https://drive.google.com/file/d/1oimqHcPehufPfqaLddlYGvPzNnqLglGL/preview" 
     allow="autoplay">
   </iframe>
 
   <script>
+    // Show/Hide hint
+    document.getElementById("hintBtn").addEventListener("click", () => {
+      const hint = document.getElementById("hint");
+      hint.style.display = hint.style.display === "none" ? "block" : "none";
+    });
+
+    // Countdown timer setup
     const countdownEl = document.getElementById("countdown");
     const resetBtn = document.getElementById("reset");
-    const endTimeKey = "huntEndTime"; // shared timer across clues
+    const endTimeKey = "huntEndTime";
     let countdownInterval;
 
     function updateCountdown() {
@@ -133,7 +148,7 @@
       updateCountdown();
     }
 
-    // Google Form logging (unchanged)
+    // Google Form logging
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
     const ENTRY_PAGE = "entry.1204348624";
     const ENTRY_TIMESTAMP = "entry.2081435125";
