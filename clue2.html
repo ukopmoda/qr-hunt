@@ -21,30 +21,41 @@
       font-size: 3rem;
       color: #ff471a;
       text-shadow: 0 0 4px #000;
-      animation: flicker 10s infinite;
+      animation: flicker 10s infinite steps(1, end);
     }
 
-    /* Flicker effect from Clue 1 */
     @keyframes flicker {
-      0%, 5%, 10%, 15%, 25%, 35%, 55%, 75%, 85%, 95%, 100% {
-        opacity: 1;
-        text-shadow: 0 0 4px #000;
-      }
-      6%, 11%, 16%, 26%, 36%, 56%, 76%, 86%, 96% {
-        opacity: 0.6;
-        text-shadow: 0 0 2px #ff471a;
-      }
-      7%, 12%, 17%, 27%, 37%, 57%, 77%, 87%, 97% {
-        opacity: 0.2;
+      0%, 87%, 100% {
+        color: #b22a0f;
         text-shadow: none;
       }
-      8%, 18%, 28%, 58%, 78%, 98% {
-        opacity: 1;
-        text-shadow:
-          0 0 5px #ff471a,
-          0 0 15px #ff471a,
-          0 0 25px #ff471a,
-          0 0 45px #ff471a;
+      88%, 89% {
+        color: #ff471a;
+        text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a;
+      }
+      90% {
+        color: #000;
+        text-shadow: none;
+      }
+      91%, 92% {
+        color: #ff471a;
+        text-shadow: 0 0 8px #ff471a, 0 0 25px #ff471a;
+      }
+      93%, 94% {
+        color: #d13610;
+        text-shadow: 0 0 5px #ff471a, 0 0 10px #ff471a;
+      }
+      95%, 96% {
+        color: #000;
+        text-shadow: none;
+      }
+      97%, 98% {
+        color: #ff471a;
+        text-shadow: 0 0 15px #ff471a, 0 0 30px #ff471a, 0 0 45px #ff471a;
+      }
+      99% {
+        color: #b22a0f;
+        text-shadow: none;
       }
     }
 
@@ -58,12 +69,12 @@
     .timer {
       font-size: 2rem;
       font-weight: 600;
-      margin: 20px 0;
+      margin-top: 30px;
       color: #ff471a;
     }
 
     button {
-      margin-top: 40px;
+      margin-top: 20px;
       background: #ff471a;
       color: white;
       border: none;
@@ -78,27 +89,29 @@
       background: #e63e14;
       transform: scale(1.05);
     }
+
+    .clue {
+      margin-top: 40px;
+      font-style: italic;
+      color: #f3f3f3;
+    }
   </style>
 </head>
 <body>
   <h1>Twin!</h1>
 
-  <!-- Subtext -->
   <p>
-    Congratulations! You're getting the hang of this I guess. I would have made something about the ambiguous acorn but I didn't know where your CARS class was, since you're late to it and everything....
+    Congratulations! I'm proud of you. I was originally going to put it at the top of the rock wall at the rec! But lowkey I wasn't trying to go through the trouble of doing allat 😅
   </p>
 
-  <!-- Timer -->
   <div class="timer" id="countdown">24:00:00</div>
 
-  <!-- Clue text -->
   <p>
     You're onto the next hint! Try looking around where we first met.  
     Oh and don’t forget to do those modules — it could put your <strong>registration</strong> on hold.  
     Lol I’m really in here like the riddler.
   </p>
 
-  <!-- Reset timer button at bottom -->
   <button id="resetButton">Reset Timer</button>
 
   <script>
@@ -110,7 +123,7 @@
     const endTimeKey = "huntEndTime";
     let countdownInterval;
 
-    function updateCountdown() {
+    function startCountdown() {
       const endTime = localStorage.getItem(endTimeKey);
       if (!endTime) return;
 
@@ -132,7 +145,7 @@
     function resetTimer() {
       const newEnd = Date.now() + totalSeconds * 1000;
       localStorage.setItem(endTimeKey, newEnd);
-      updateCountdown();
+      startCountdown();
     }
 
     resetButton.addEventListener("click", () => {
@@ -145,12 +158,12 @@
       }
     });
 
-    // Start timer if already set
-    if (!localStorage.getItem(endTimeKey)) {
-      resetTimer(); // first scan
-    } else {
-      updateCountdown();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
+      resetTimer(); // start timer on first scan
     }
+
+    startCountdown();
 
     // ====== GOOGLE FORM LOGGING ======
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
