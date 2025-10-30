@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riddle Awaits!</title>
+  <title>Almost there!</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@300;600&display=swap');
 
@@ -24,10 +24,28 @@
       animation: flicker 10s infinite;
     }
 
+    /* Broken gas station flicker */
     @keyframes flicker {
-      0%, 89%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
-      90%, 91%, 92%, 93%, 94%, 95% { color: #ff471a; text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a, 0 0 25px #ff471a, 0 0 45px #ff471a; }
-      96%, 97%, 98%, 99% { color: #d13610; text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a; }
+      0%, 5%, 10%, 15%, 25%, 35%, 55%, 75%, 85%, 95%, 100% {
+        opacity: 1;
+        text-shadow: 0 0 4px #000;
+      }
+      6%, 11%, 16%, 26%, 36%, 56%, 76%, 86%, 96% {
+        opacity: 0.6;
+        text-shadow: 0 0 2px #ff471a;
+      }
+      7%, 12%, 17%, 27%, 37%, 57%, 77%, 87%, 97% {
+        opacity: 0.2;
+        text-shadow: none;
+      }
+      8%, 18%, 28%, 58%, 78%, 98% {
+        opacity: 1;
+        text-shadow:
+          0 0 5px #ff471a,
+          0 0 15px #ff471a,
+          0 0 25px #ff471a,
+          0 0 45px #ff471a;
+      }
     }
 
     p {
@@ -44,53 +62,62 @@
       color: #ff471a;
     }
 
-    iframe {
-      margin-top: 30px;
-      border-radius: 8px;
+    video {
       width: 90%;
-      max-width: 700px;
-      height: 400px;
-      border: none;
+      max-width: 600px;
+      margin-top: 25px;
+      border: 2px solid #ff471a;
+      border-radius: 10px;
+      outline: none;
     }
 
     button {
       margin-top: 20px;
-      padding: 10px 25px;
       background: #ff471a;
-      border: none;
       color: white;
-      font-size: 1rem;
-      border-radius: 6px;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.2s;
     }
 
     button:hover {
-      background: #d93b10;
+      background: #e63e14;
+      transform: scale(1.05);
     }
+
   </style>
 </head>
 <body>
-  <h1>Riddle Awaits!</h1>
+  <h1>Almost there!</h1>
+  <p>
+    If you're stuck just <strong>aura farm</strong> and you'll probably figure it out.
+  </p>
 
-  <p>If you're stuck just aura farm and you'll probably figure it out.</p>
+  <video controls>
+    <source src="https://drive.google.com/uc?export=download&id=1lsJeCMT6c2wYbNkhE8NHrjTiteDBAjAw" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
   <div class="timer" id="countdown">24:00:00</div>
-  <button id="reset">Reset Timer</button>
 
-  <!-- ✅ Plays directly from Google Drive -->
-  <iframe src="https://drive.google.com/file/d/1lsJeCMT6c2wYbNkhE8NHrjTiteDBAjAw/preview" allow="autoplay"></iframe>
+  <button id="resetButton">Reset Timer</button>
 
   <script>
-    // ===== TIMER LOGIC =====
+    // ====== TIMER LOGIC ======
     const countdownEl = document.getElementById("countdown");
-    const resetBtn = document.getElementById("reset");
+    const resetButton = document.getElementById("resetButton");
+
+    const totalSeconds = 24 * 60 * 60;
     const endTimeKey = "huntEndTime";
     let countdownInterval;
 
-    function updateCountdown() {
+    function startCountdown() {
       const endTime = localStorage.getItem(endTimeKey);
       if (!endTime) return;
+
       clearInterval(countdownInterval);
       countdownInterval = setInterval(() => {
         const remaining = Math.floor((endTime - Date.now()) / 1000);
@@ -106,35 +133,28 @@
       }, 1000);
     }
 
-    function startTimer() {
-      const endTime = Date.now() + 24 * 60 * 60 * 1000;
-      localStorage.setItem(endTimeKey, endTime);
-      updateCountdown();
+    function resetTimer() {
+      const newEnd = Date.now() + totalSeconds * 1000;
+      localStorage.setItem(endTimeKey, newEnd);
+      startCountdown();
     }
 
-    resetBtn.addEventListener("click", startTimer);
-
-    if (localStorage.getItem(endTimeKey)) {
-      updateCountdown();
-    }
-
-    // ===== GOOGLE FORM LOGGING =====
-    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
-    const ENTRY_PAGE = "entry.1204348624";
-    const ENTRY_TIMESTAMP = "entry.2081435125";
-
-    function logVisit(pageName) {
-      const timestamp = new Date().toLocaleString();
-      const url = `${FORM_URL}?${ENTRY_PAGE}=${encodeURIComponent(pageName)}&${ENTRY_TIMESTAMP}=${encodeURIComponent(timestamp)}`;
-      fetch(url, { mode: "no-cors" })
-        .then(() => console.log("✅ Logged visit to Google Form"))
-        .catch(err => console.error("❌ Logging failed:", err));
-    }
-
-    window.addEventListener("load", () => {
-      logVisit("Clue 4 — Riddle Awaits!");
+    resetButton.addEventListener("click", () => {
+      const pass = prompt("Enter reset password:");
+      if (pass === "pumpkinpatch") {
+        resetTimer();
+        alert("Timer reset successfully!");
+      } else {
+        alert("Incorrect password.");
+      }
     });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("start") === "true" && !localStorage.getItem(endTimeKey)) {
+      resetTimer(); // start timer on first scan
+    }
+
+    startCountdown();
   </script>
 </body>
 </html>
-
