@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riddle Awaits!</title>
+  <title>Almost There!</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@300;600&display=swap');
 
@@ -24,6 +24,7 @@
       animation: flicker 10s infinite;
     }
 
+    /* Original flicker effect (smooth, spooky, not distracting) */
     @keyframes flicker {
       0%, 89%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
       90%, 91%, 92%, 93%, 94%, 95% {
@@ -57,6 +58,7 @@
       max-width: 700px;
       height: 400px;
       border: none;
+      outline: none;
     }
 
     button {
@@ -77,21 +79,22 @@
   </style>
 </head>
 <body>
-  <h1>Riddle Awaits!</h1>
+  <h1>Almost There!</h1>
 
   <p>If you're stuck just aura farm and you'll probably figure it out.</p>
 
-  <div class="timer" id="countdown">24:00:00</div>
+  <div class="timer" id="countdown">--:--:--</div>
   <button id="reset">Reset Timer</button>
 
-  <!-- ✅ Plays directly from Google Drive -->
-  <iframe src="https://drive.google.com/file/d/1lsJeCMT6c2wYbNkhE8NHrjTiteDBAjAw/preview" allow="autoplay"></iframe>
+  <iframe 
+    src="https://drive.google.com/file/d/1lsJeCMT6c2wYbNkhE8NHrjTiteDBAjAw/preview" 
+    allow="autoplay">
+  </iframe>
 
   <script>
-    // ===== TIMER LOGIC =====
     const countdownEl = document.getElementById("countdown");
     const resetBtn = document.getElementById("reset");
-    const endTimeKey = "huntEndTime";
+    const endTimeKey = "huntEndTime"; // shared timer across clues
     let countdownInterval;
 
     function updateCountdown() {
@@ -112,19 +115,15 @@
       }, 1000);
     }
 
-    function startTimer() {
-      const newEnd = Date.now() + 24 * 60 * 60 * 1000;
-      localStorage.setItem(endTimeKey, newEnd);
-      updateCountdown();
-    }
-
     function resetTimer() {
-      const pass = prompt("Enter reset password:");
-      if (pass && pass.trim().toLowerCase() === "pumpkinpatch") {
-        startTimer();
-        alert("✅ Timer reset successfully!");
-      } else if (pass) {
-        alert("❌ Incorrect password.");
+      const password = prompt("Enter password to reset timer:");
+      if (password === "pumpkinpatch") {
+        const endTime = Date.now() + 24 * 60 * 60 * 1000;
+        localStorage.setItem(endTimeKey, endTime);
+        updateCountdown();
+        alert("Timer reset successfully!");
+      } else if (password !== null) {
+        alert("Incorrect password.");
       }
     }
 
@@ -134,7 +133,7 @@
       updateCountdown();
     }
 
-    // ===== GOOGLE FORM LOGGING =====
+    // Google Form logging (unchanged)
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
     const ENTRY_PAGE = "entry.1204348624";
     const ENTRY_TIMESTAMP = "entry.2081435125";
@@ -148,7 +147,7 @@
     }
 
     window.addEventListener("load", () => {
-      logVisit("Clue 4 — Riddle Awaits!");
+      logVisit("Clue 4 — Almost There!");
     });
   </script>
 </body>
