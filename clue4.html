@@ -24,7 +24,6 @@
       animation: flicker 10s infinite;
     }
 
-    /* Original flicker effect */
     @keyframes flicker {
       0%, 89%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
       90%, 91%, 92%, 93%, 94%, 95% {
@@ -79,38 +78,41 @@
 
     #hint {
       display: none;
-      margin-top: 20px;
-      color: #ff471a;
-      font-weight: bold;
+      font-style: italic;
+      color: #ff784e;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <h1>Almost There!</h1>
 
-  <button id="hintBtn">If you're stuck</button>
-  <p id="hint">The treasure is under a certain stairwell!</p>
+  <p>You're so close now, twin.</p>
 
   <div class="timer" id="countdown">--:--:--</div>
-  <button id="reset">Reset Timer</button>
 
   <iframe 
-    src="https://drive.google.com/file/d/1oimqHcPehufPfqaLddlYGvPzNnqLglGL/preview" 
+    src="https://drive.google.com/file/d/1rg1Wso_lXhTupTW5f_Iw0e9qsuInpon6/preview" 
     allow="autoplay">
   </iframe>
 
-  <script>
-    // Show/Hide hint
-    document.getElementById("hintBtn").addEventListener("click", () => {
-      const hint = document.getElementById("hint");
-      hint.style.display = hint.style.display === "none" ? "block" : "none";
-    });
+  <button id="hintButton">If you're stuck</button>
+  <p id="hint">The treasure is under a certain stairwell!</p>
 
-    // Countdown timer setup
+  <button id="reset">Reset Timer</button>
+
+  <script>
     const countdownEl = document.getElementById("countdown");
     const resetBtn = document.getElementById("reset");
+    const hintButton = document.getElementById("hintButton");
+    const hintText = document.getElementById("hint");
     const endTimeKey = "huntEndTime";
     let countdownInterval;
+
+    hintButton.addEventListener("click", () => {
+      hintText.style.display = "block";
+      hintButton.style.display = "none";
+    });
 
     function updateCountdown() {
       const endTime = localStorage.getItem(endTimeKey);
