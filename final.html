@@ -26,14 +26,38 @@
     }
 
     @keyframes flicker {
-      0%, 87%, 100% { color: #b22a0f; text-shadow: none; }
-      88%, 89% { color: #ff471a; text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a; }
-      90% { color: #000; text-shadow: none; }
-      91%, 92% { color: #ff471a; text-shadow: 0 0 8px #ff471a, 0 0 25px #ff471a; }
-      93%, 94% { color: #d13610; text-shadow: 0 0 5px #ff471a, 0 0 10px #ff471a; }
-      95%, 96% { color: #000; text-shadow: none; }
-      97%, 98% { color: #ff471a; text-shadow: 0 0 15px #ff471a, 0 0 30px #ff471a, 0 0 45px #ff471a; }
-      99% { color: #b22a0f; text-shadow: none; }
+      0%, 87%, 100% {
+        color: #b22a0f;
+        text-shadow: none;
+      }
+      88%, 89% {
+        color: #ff471a;
+        text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a;
+      }
+      90% {
+        color: #000;
+        text-shadow: none;
+      }
+      91%, 92% {
+        color: #ff471a;
+        text-shadow: 0 0 8px #ff471a, 0 0 25px #ff471a;
+      }
+      93%, 94% {
+        color: #d13610;
+        text-shadow: 0 0 5px #ff471a, 0 0 10px #ff471a;
+      }
+      95%, 96% {
+        color: #000;
+        text-shadow: none;
+      }
+      97%, 98% {
+        color: #ff471a;
+        text-shadow: 0 0 15px #ff471a, 0 0 30px #ff471a, 0 0 45px #ff471a;
+      }
+      99% {
+        color: #b22a0f;
+        text-shadow: none;
+      }
     }
 
     p {
@@ -47,10 +71,12 @@
       position: absolute;
       width: 10px;
       height: 10px;
+      background-color: #ff471a;
+      top: 0;
+      left: 50%;
       opacity: 0.7;
       pointer-events: none;
-      top: 0;
-      animation: fall 3s linear forwards;
+      animation: fall 3s linear infinite;
     }
 
     @keyframes fall {
@@ -68,21 +94,26 @@
   </p>
 
   <script>
-    // Confetti generator (stops after 3 seconds)
-    function createConfetti(count = 100) {
-      for (let i = 0; i < count; i++) {
+    // Confetti generator
+    function createConfetti() {
+      const confettiCount = 100;
+      for (let i = 0; i < confettiCount; i++) {
         const confetti = document.createElement('div');
         confetti.classList.add('confetti');
         confetti.style.left = Math.random() * window.innerWidth + 'px';
         confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
         confetti.style.width = confetti.style.height = (Math.random() * 8 + 4) + 'px';
         document.body.appendChild(confetti);
+
+        // Remove confetti after animation
         setTimeout(() => confetti.remove(), 3000);
       }
     }
 
     window.addEventListener('load', () => {
       createConfetti();
+      setInterval(createConfetti, 500); // keep generating confetti for effect
     });
   </script>
 </body>
