@@ -20,27 +20,17 @@
       font-family: 'Creepster', cursive;
       font-size: 3rem;
       color: #ff471a;
-      text-shadow: 0 0 4px #000;
-      animation: flicker 10s infinite;
+      text-shadow: 0 0 5px #ff471a, 0 0 20px #ff471a, 0 0 40px #ff471a;
+      animation: flicker 3s infinite;
     }
 
-    /* Broken gas station flicker effect */
+    /* Exact same flicker as Clue 1 */
     @keyframes flicker {
-      0%, 7%, 12%, 17%, 22%, 100% {
-        color: #b22a0f;
-        text-shadow: 0 0 2px #000;
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
       }
-      8%, 9%, 13%, 14%, 18%, 19%, 23%, 24% {
-        color: #ff471a;
-        text-shadow:
-          0 0 5px #ff471a,
-          0 0 15px #ff471a,
-          0 0 25px #ff471a,
-          0 0 45px #ff471a;
-      }
-      25%, 26%, 27% {
-        color: #d13610;
-        text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a;
+      20%, 24%, 55% {
+        opacity: 0.3;
       }
     }
 
@@ -97,14 +87,6 @@
 
   <div class="timer" id="countdown">24:00:00</div>
 
-  <div class="clue">
-    <p>
-      The treasure is hidden near the Wood Horse on campus — keep your eyes sharp and your steps steady.  
-      Your next clue awaits nearby, just like it always has.
-    </p>
-  </div>
-
-  <!-- Reset timer button (for you only) -->
   <button id="resetButton">Reset Timer</button>
 
   <script>
@@ -179,4 +161,3 @@
   </script>
 </body>
 </html>
-
