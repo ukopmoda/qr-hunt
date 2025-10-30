@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Final Clue</title>
+  <title>Riddle Awaits!</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Montserrat:wght@300;600&display=swap');
 
@@ -21,19 +21,18 @@
       font-size: 3rem;
       color: #ff471a;
       text-shadow: 0 0 4px #000;
-      animation: softFlicker 12s infinite;
+      animation: flicker 10s infinite;
     }
 
-    /* smooth spooky flicker */
-    @keyframes softFlicker {
-      0%, 18%, 22%, 25%, 53%, 57%, 100% {
-        opacity: 1;
+    @keyframes flicker {
+      0%, 89%, 100% { color: #b22a0f; text-shadow: 0 0 2px #000; }
+      90%, 91%, 92%, 93%, 94%, 95% {
+        color: #ff471a;
+        text-shadow: 0 0 5px #ff471a, 0 0 15px #ff471a, 0 0 25px #ff471a, 0 0 45px #ff471a;
       }
-      19%, 23%, 54%, 56% {
-        opacity: 0.6;
-      }
-      20%, 55% {
-        opacity: 0.3;
+      96%, 97%, 98%, 99% {
+        color: #d13610;
+        text-shadow: 0 0 4px #ff471a, 0 0 10px #ff471a;
       }
     }
 
@@ -44,15 +43,6 @@
       margin: 20px auto;
     }
 
-    video {
-      width: 90%;
-      max-width: 600px;
-      margin-top: 25px;
-      border: 2px solid #ff471a;
-      border-radius: 10px;
-      outline: none;
-    }
-
     .timer {
       font-size: 2rem;
       font-weight: 600;
@@ -60,65 +50,106 @@
       color: #ff471a;
     }
 
-    button {
-      margin-top: 25px;
-      background-color: #ff471a;
+    iframe {
+      margin-top: 30px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 700px;
+      height: 400px;
       border: none;
-      border-radius: 5px;
-      color: #fff;
-      font-weight: bold;
-      padding: 10px 18px;
-      cursor: pointer;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 25px;
+      background: #ff471a;
+      border: none;
+      color: white;
       font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
     }
 
     button:hover {
-      background-color: #cc3311;
+      background: #d93b10;
     }
   </style>
 </head>
 <body>
-  <h1>Almost There!</h1>
+  <h1>Riddle Awaits!</h1>
 
-  <video controls>
-    <source src="https://drive.google.com/uc?export=download&id=1lsJeCMT6c2wYbNkhE8NHrjTiteDBAjAw" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <p>If you're stuck just aura farm and you'll probably figure it out.</p>
 
-  <p>If you're stuck, just aura farm and you'll probably figure it out.</p>
+  <div class="timer" id="countdown">24:00:00</div>
+  <button id="reset">Reset Timer</button>
 
-  <div class="timer" id="timer">00:00</div>
-
-  <button onclick="resetTimer()">Reset Timer</button>
+  <!-- ✅ Plays directly from Google Drive -->
+  <iframe src="https://drive.google.com/file/d/1lsJeCMT6c2wYbNkhE8NHrjTiteDBAjAw/preview" allow="autoplay"></iframe>
 
   <script>
-    // Timer logic
-    function startTimer() {
-      let startTime = localStorage.getItem('timerStart');
-      if (!startTime) {
-        startTime = Date.now();
-        localStorage.setItem('timerStart', startTime);
-      }
+    // ===== TIMER LOGIC =====
+    const countdownEl = document.getElementById("countdown");
+    const resetBtn = document.getElementById("reset");
+    const endTimeKey = "huntEndTime";
+    let countdownInterval;
 
-      setInterval(() => {
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
-        const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
-        const seconds = (elapsed % 60).toString().padStart(2, '0');
-        document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+    function updateCountdown() {
+      const endTime = localStorage.getItem(endTimeKey);
+      if (!endTime) return;
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        const remaining = Math.floor((endTime - Date.now()) / 1000);
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+          countdownEl.textContent = "00:00:00";
+        } else {
+          const h = String(Math.floor(remaining / 3600)).padStart(2, "0");
+          const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, "0");
+          const s = String(remaining % 60).padStart(2, "0");
+          countdownEl.textContent = `${h}:${m}:${s}`;
+        }
       }, 1000);
     }
 
+    function startTimer() {
+      const newEnd = Date.now() + 24 * 60 * 60 * 1000;
+      localStorage.setItem(endTimeKey, newEnd);
+      updateCountdown();
+    }
+
     function resetTimer() {
-      const input = prompt("Enter password to reset timer:").trim().toLowerCase();
-      if (input === 'pumpkinpatch') {
-        localStorage.removeItem('timerStart');
-        alert('Timer reset! Refresh or rescan to restart.');
-      } else if (input) {
-        alert('Incorrect password.');
+      const pass = prompt("Enter reset password:");
+      if (pass && pass.trim().toLowerCase() === "pumpkinpatch") {
+        startTimer();
+        alert("✅ Timer reset successfully!");
+      } else if (pass) {
+        alert("❌ Incorrect password.");
       }
     }
 
-    startTimer();
+    resetBtn.addEventListener("click", resetTimer);
+
+    if (localStorage.getItem(endTimeKey)) {
+      updateCountdown();
+    }
+
+    // ===== GOOGLE FORM LOGGING =====
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc98vrMFB93dOJ-VO84kGNkERM6wAb-ENA1UZ9I4gpdsrPKmg/formResponse";
+    const ENTRY_PAGE = "entry.1204348624";
+    const ENTRY_TIMESTAMP = "entry.2081435125";
+
+    function logVisit(pageName) {
+      const timestamp = new Date().toLocaleString();
+      const url = `${FORM_URL}?${ENTRY_PAGE}=${encodeURIComponent(pageName)}&${ENTRY_TIMESTAMP}=${encodeURIComponent(timestamp)}`;
+      fetch(url, { mode: "no-cors" })
+        .then(() => console.log("✅ Logged visit to Google Form"))
+        .catch(err => console.error("❌ Logging failed:", err));
+    }
+
+    window.addEventListener("load", () => {
+      logVisit("Clue 4 — Riddle Awaits!");
+    });
   </script>
 </body>
 </html>
